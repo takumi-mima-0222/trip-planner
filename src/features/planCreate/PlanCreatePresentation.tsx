@@ -85,7 +85,7 @@ const PlanCreatePresentation = ({
                 <Input
                   id="startDate"
                   type="date"
-                  className="box-border h-9 w-full min-w-0 px-1 text-base sm:h-11 sm:px-3 [&::-webkit-calendar-picker-indicator]:ml-0 [&::-webkit-calendar-picker-indicator]:p-0"
+                  className="box-border h-9 w-full min-w-0 px-1 text-[14px] sm:h-11 sm:px-3 sm:text-base [&::-webkit-calendar-picker-indicator]:size-4 [&::-webkit-calendar-picker-indicator]:opacity-60"
                   aria-invalid={!!errors.startDate}
                   {...register('startDate')}
                 />
@@ -99,7 +99,7 @@ const PlanCreatePresentation = ({
                 <Input
                   id="endDate"
                   type="date"
-                  className="box-border h-9 w-full min-w-0 px-1 text-base sm:h-11 sm:px-3 [&::-webkit-calendar-picker-indicator]:ml-0 [&::-webkit-calendar-picker-indicator]:p-0"
+                  className="box-border h-9 w-full min-w-0 px-1 text-[14px] sm:h-11 sm:px-3 sm:text-base [&::-webkit-calendar-picker-indicator]:size-4 [&::-webkit-calendar-picker-indicator]:opacity-60"
                   aria-invalid={!!errors.endDate}
                   {...register('endDate')}
                 />
@@ -117,7 +117,7 @@ const PlanCreatePresentation = ({
                 id="departureTime"
                 type="time"
                 defaultValue="09:00"
-                className="box-border h-9 w-full min-w-0 px-1 text-base sm:h-11 sm:w-40 sm:px-3 [&::-webkit-calendar-picker-indicator]:ml-0 [&::-webkit-calendar-picker-indicator]:p-0"
+                className="box-border h-9 w-32 min-w-0 px-1 text-[14px] sm:h-11 sm:w-40 sm:px-3 sm:text-base [&::-webkit-calendar-picker-indicator]:size-4 [&::-webkit-calendar-picker-indicator]:opacity-60"
                 aria-invalid={!!errors.departureTime}
                 {...register('departureTime')}
               />
