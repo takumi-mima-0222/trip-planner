@@ -9,8 +9,10 @@ export const PlanDetailContainer = () => {
     days,
     issues,
     alternatives,
+    isShareCopied,
     handleBackToCreate,
     handleCreateNew,
+    handleSharePlan,
   } = usePlanDetail();
 
   return (
@@ -21,6 +23,8 @@ export const PlanDetailContainer = () => {
       alternatives={alternatives}
       onBackToCreate={handleBackToCreate}
       onCreateNew={handleCreateNew}
+      onSharePlan={handleSharePlan}
+      isShareCopied={isShareCopied}
     />
   );
 };
