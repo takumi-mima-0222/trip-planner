@@ -75,8 +75,8 @@ const PlanCreatePresentation = ({
         {/* Form Card */}
         <Card className="mb-8 bg-white p-4 shadow-lg sm:p-6 md:mb-16 md:p-8">
           <form className="space-y-4 sm:space-y-5" onSubmit={onSubmit}>
-            {/* Travel Dates & Time - 2 cols on mobile, 3 cols on sm+ */}
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4">
+            {/* Travel Dates - 2 columns */}
+            <div className="grid grid-cols-2 gap-2 sm:gap-4">
               <div className="space-y-1.5">
                 <label htmlFor="startDate" className="flex items-center gap-1 text-xs font-semibold text-slate-700 sm:gap-2 sm:text-sm">
                   <Calendar className="size-3.5 text-sky-600 sm:size-4" />
@@ -105,21 +105,23 @@ const PlanCreatePresentation = ({
                 />
                 {errors.endDate && <p className="text-xs text-red-600">{errors.endDate.message}</p>}
               </div>
-              <div className="col-span-2 space-y-1.5 sm:col-span-1">
-                <label htmlFor="departureTime" className="flex items-center gap-1 text-xs font-semibold text-slate-700 sm:gap-2 sm:text-sm">
-                  <Clock className="size-3.5 text-sky-600 sm:size-4" />
-                  出発時刻
-                </label>
-                <Input
-                  id="departureTime"
-                  type="time"
-                  defaultValue="09:00"
-                  className="h-9 px-1.5 text-base sm:h-11 sm:px-3"
-                  aria-invalid={!!errors.departureTime}
-                  {...register('departureTime')}
-                />
-                {errors.departureTime && <p className="text-xs text-red-600">{errors.departureTime.message}</p>}
-              </div>
+            </div>
+
+            {/* Departure Time - Single row */}
+            <div className="space-y-1.5">
+              <label htmlFor="departureTime" className="flex items-center gap-1 text-xs font-semibold text-slate-700 sm:gap-2 sm:text-sm">
+                <Clock className="size-3.5 text-sky-600 sm:size-4" />
+                出発時刻
+              </label>
+              <Input
+                id="departureTime"
+                type="time"
+                defaultValue="09:00"
+                className="h-9 w-full px-1.5 text-base sm:h-11 sm:w-40 sm:px-3"
+                aria-invalid={!!errors.departureTime}
+                {...register('departureTime')}
+              />
+              {errors.departureTime && <p className="text-xs text-red-600">{errors.departureTime.message}</p>}
             </div>
 
             {/* Departure Point & Base Stay - 2 columns */}
