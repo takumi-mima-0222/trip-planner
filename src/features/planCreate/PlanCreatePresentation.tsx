@@ -52,13 +52,15 @@ const PlanCreatePresentation = ({
       {/* Main Content */}
       <main className="mx-auto max-w-3xl px-4 py-8 md:py-12">
         {/* Hero Section */}
-        <section className="mb-12 text-center">
-          <h2 className="mb-4 text-2xl font-bold text-balance text-sky-900 md:text-4xl">
-            行きたい場所を入れるだけで、<br />
+        <section className="mb-8 text-center md:mb-12">
+          <h2 className="mb-3 text-xl font-bold text-balance text-sky-900 sm:text-2xl md:mb-4 md:text-4xl">
+            行きたい場所を入れるだけで、
+            <br className="hidden sm:block" />
             無理のない旅行プランを自動作成。
           </h2>
-          <p className="text-pretty text-slate-600 md:text-lg">
-            出発地点・宿泊地・行きたいスポットを入力すると、<br />
+          <p className="text-sm text-pretty text-slate-600 sm:text-base md:text-lg">
+            出発地点・宿泊地・行きたいスポットを入力すると、
+            <br className="hidden md:block" />
             AIが移動時間を考慮し、現実的に回れる順番とスケジュールを提案します。
           </p>
         </section>
@@ -71,117 +73,107 @@ const PlanCreatePresentation = ({
         )}
 
         {/* Form Card */}
-        <Card className="mb-16 bg-white p-6 shadow-lg md:p-8">
-          <form className="space-y-6" onSubmit={onSubmit}>
-            {/* Travel Dates */}
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <label htmlFor="startDate" className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                  <Calendar className="size-4 text-sky-600" />
-                  旅行開始日
+        <Card className="mb-8 bg-white p-4 shadow-lg sm:p-6 md:mb-16 md:p-8">
+          <form className="space-y-4 sm:space-y-5" onSubmit={onSubmit}>
+            {/* Travel Dates & Time - 3 columns on mobile, flexible on larger */}
+            <div className="grid grid-cols-3 gap-2 sm:gap-4">
+              <div className="space-y-1.5">
+                <label htmlFor="startDate" className="flex items-center gap-1 text-xs font-semibold text-slate-700 sm:gap-2 sm:text-sm">
+                  <Calendar className="size-3.5 text-sky-600 sm:size-4" />
+                  <span className="hidden sm:inline">旅行</span>開始日
                 </label>
                 <Input
                   id="startDate"
                   type="date"
-                  className="h-11"
+                  className="h-9 px-2 text-sm sm:h-11 sm:px-3"
                   aria-invalid={!!errors.startDate}
                   {...register('startDate')}
                 />
-                {errors.startDate && <p className="text-sm text-red-600">{errors.startDate.message}</p>}
+                {errors.startDate && <p className="text-xs text-red-600">{errors.startDate.message}</p>}
               </div>
-              <div className="space-y-2">
-                <label htmlFor="endDate" className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                  <Calendar className="size-4 text-sky-600" />
-                  旅行終了日
+              <div className="space-y-1.5">
+                <label htmlFor="endDate" className="flex items-center gap-1 text-xs font-semibold text-slate-700 sm:gap-2 sm:text-sm">
+                  <Calendar className="size-3.5 text-sky-600 sm:size-4" />
+                  <span className="hidden sm:inline">旅行</span>終了日
                 </label>
                 <Input
                   id="endDate"
                   type="date"
-                  className="h-11"
+                  className="h-9 px-2 text-sm sm:h-11 sm:px-3"
                   aria-invalid={!!errors.endDate}
                   {...register('endDate')}
                 />
-                {errors.endDate && <p className="text-sm text-red-600">{errors.endDate.message}</p>}
+                {errors.endDate && <p className="text-xs text-red-600">{errors.endDate.message}</p>}
+              </div>
+              <div className="space-y-1.5">
+                <label htmlFor="departureTime" className="flex items-center gap-1 text-xs font-semibold text-slate-700 sm:gap-2 sm:text-sm">
+                  <Clock className="size-3.5 text-sky-600 sm:size-4" />
+                  出発時刻
+                </label>
+                <Input
+                  id="departureTime"
+                  type="time"
+                  defaultValue="09:00"
+                  className="h-9 px-2 text-sm sm:h-11 sm:px-3"
+                  aria-invalid={!!errors.departureTime}
+                  {...register('departureTime')}
+                />
+                {errors.departureTime && <p className="text-xs text-red-600">{errors.departureTime.message}</p>}
               </div>
             </div>
 
-            {/* Departure Point */}
-            <div className="space-y-2">
-              <label htmlFor="departure" className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                <MapPin className="size-4 text-sky-600" />
-                出発地点
-              </label>
-              <Input
-                id="departure"
-                type="text"
-                placeholder="例）那覇空港, 東京駅 など"
-                className="h-11"
-                aria-invalid={!!errors.departure}
-                {...register('departure')}
-              />
-              {errors.departure && <p className="text-sm text-red-600">{errors.departure.message}</p>}
-            </div>
-
-            {/* Departure Time */}
-            <div className="space-y-2">
-              <label htmlFor="departureTime" className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                <Clock className="size-4 text-sky-600" />
-                出発時刻
-              </label>
-              <Input
-                id="departureTime"
-                type="time"
-                defaultValue="09:00"
-                className="h-11"
-                aria-invalid={!!errors.departureTime}
-                {...register('departureTime')}
-              />
-              {errors.departureTime && (
-                <p className="text-sm text-red-600">{errors.departureTime.message}</p>
-              )}
-            </div>
-
-            {/* Base Stay */}
-            <div className="space-y-2">
-              <label htmlFor="baseStay" className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                <Home className="size-4 text-sky-600" />
-                宿泊拠点
-              </label>
-              <Input
-                id="baseStay"
-                type="text"
-                placeholder="例）那覇市内ホテル, 恩納村リゾート など"
-                className="h-11"
-                aria-invalid={!!errors.baseStay}
-                {...register('baseStay')}
-              />
-              <p className="text-xs text-slate-500">宿泊する場所を1箇所指定してください</p>
-              {errors.baseStay && <p className="text-sm text-red-600">{errors.baseStay.message}</p>}
+            {/* Departure Point & Base Stay - 2 columns */}
+            <div className="grid grid-cols-2 gap-2 sm:gap-4">
+              <div className="space-y-1.5">
+                <label htmlFor="departure" className="flex items-center gap-1 text-xs font-semibold text-slate-700 sm:gap-2 sm:text-sm">
+                  <MapPin className="size-3.5 text-sky-600 sm:size-4" />
+                  出発地点
+                </label>
+                <Input
+                  id="departure"
+                  type="text"
+                  placeholder="例）那覇空港"
+                  className="h-9 px-2 text-sm sm:h-11 sm:px-3"
+                  aria-invalid={!!errors.departure}
+                  {...register('departure')}
+                />
+                {errors.departure && <p className="text-xs text-red-600">{errors.departure.message}</p>}
+              </div>
+              <div className="space-y-1.5">
+                <label htmlFor="baseStay" className="flex items-center gap-1 text-xs font-semibold text-slate-700 sm:gap-2 sm:text-sm">
+                  <Home className="size-3.5 text-sky-600 sm:size-4" />
+                  宿泊拠点
+                </label>
+                <Input
+                  id="baseStay"
+                  type="text"
+                  placeholder="例）那覇市内ホテル"
+                  className="h-9 px-2 text-sm sm:h-11 sm:px-3"
+                  aria-invalid={!!errors.baseStay}
+                  {...register('baseStay')}
+                />
+                {errors.baseStay && <p className="text-xs text-red-600">{errors.baseStay.message}</p>}
+              </div>
             </div>
 
             {/* Spots to Visit */}
-            <div className="space-y-3">
-              <div>
-                <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                  <MapPin className="size-4 text-sky-600" />
-                  行きたいスポット
-                </label>
-                <p className="mt-1 text-xs text-slate-500">
-                  ※行きたい場所を1件以上入力してください
-                </p>
-              </div>
+            <div className="space-y-2">
+              <label className="flex items-center gap-1 text-xs font-semibold text-slate-700 sm:gap-2 sm:text-sm">
+                <MapPin className="size-3.5 text-sky-600 sm:size-4" />
+                行きたいスポット <span className="font-normal text-slate-500">（1件以上）</span>
+              </label>
 
               {/* Spot Input Rows */}
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {fields.map((field, index) => (
-                  <div key={field.id} className="flex items-center gap-2">
-                    <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-sky-100 text-sm font-medium text-sky-700">
+                  <div key={field.id} className="flex items-center gap-1">
+                    <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-sky-100 text-xs font-medium text-sky-700 sm:size-7">
                       {index + 1}
                     </div>
                     <Input
                       type="text"
-                      placeholder="スポット名（例：首里城, 国際通り など）"
-                      className="h-11 flex-1"
+                      placeholder="スポット名"
+                      className="h-9 min-w-0 flex-1 px-2 text-sm sm:h-10 sm:px-3"
                       aria-invalid={!!(Array.isArray(errors.spots) && errors.spots[index]?.value)}
                       {...register(`spots.${index}.value`)}
                     />
@@ -189,7 +181,7 @@ const PlanCreatePresentation = ({
                       type="button"
                       variant="ghost"
                       size="icon"
-                      className="size-11 shrink-0 text-slate-400 hover:text-slate-600 disabled:opacity-30"
+                      className="size-8 shrink-0 text-slate-400 hover:text-slate-600 disabled:opacity-30 sm:size-9"
                       onClick={() => removeSpot(index)}
                       disabled={!canRemove}
                     >
@@ -212,19 +204,19 @@ const PlanCreatePresentation = ({
               <Button
                 type="button"
                 variant="ghost"
-                className="w-full text-sky-600 hover:text-sky-700"
+                className="h-8 w-full text-sm text-sky-600 hover:text-sky-700 sm:h-10"
                 onClick={addSpot}
               >
-                <Plus className="mr-2 size-4" />
+                <Plus className="mr-1 size-3.5 sm:mr-2 sm:size-4" />
                 スポットを追加
               </Button>
             </div>
 
             {/* Submit Button */}
-            <div className="space-y-2 pt-2">
+            <div className="pt-1 sm:pt-2">
               <Button
                 type="submit"
-                className="h-12 w-full bg-sky-600 text-base font-semibold hover:bg-sky-700"
+                className="h-10 w-full bg-sky-600 text-sm font-semibold hover:bg-sky-700 sm:h-12 sm:text-base"
               >
                 プランを作成
               </Button>
