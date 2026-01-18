@@ -75,17 +75,17 @@ const PlanCreatePresentation = ({
         {/* Form Card */}
         <Card className="mb-8 bg-white p-4 shadow-lg sm:p-6 md:mb-16 md:p-8">
           <form className="space-y-4 sm:space-y-5" onSubmit={onSubmit}>
-            {/* Travel Dates & Time - 3 columns on mobile, flexible on larger */}
-            <div className="grid grid-cols-3 gap-2 sm:gap-4">
+            {/* Travel Dates & Time - 2 cols on mobile, 3 cols on sm+ */}
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4">
               <div className="space-y-1.5">
                 <label htmlFor="startDate" className="flex items-center gap-1 text-xs font-semibold text-slate-700 sm:gap-2 sm:text-sm">
                   <Calendar className="size-3.5 text-sky-600 sm:size-4" />
-                  <span className="hidden sm:inline">旅行</span>開始日
+                  開始日
                 </label>
                 <Input
                   id="startDate"
                   type="date"
-                  className="h-9 px-2 text-sm sm:h-11 sm:px-3"
+                  className="h-9 px-1.5 text-base sm:h-11 sm:px-3"
                   aria-invalid={!!errors.startDate}
                   {...register('startDate')}
                 />
@@ -94,18 +94,18 @@ const PlanCreatePresentation = ({
               <div className="space-y-1.5">
                 <label htmlFor="endDate" className="flex items-center gap-1 text-xs font-semibold text-slate-700 sm:gap-2 sm:text-sm">
                   <Calendar className="size-3.5 text-sky-600 sm:size-4" />
-                  <span className="hidden sm:inline">旅行</span>終了日
+                  終了日
                 </label>
                 <Input
                   id="endDate"
                   type="date"
-                  className="h-9 px-2 text-sm sm:h-11 sm:px-3"
+                  className="h-9 px-1.5 text-base sm:h-11 sm:px-3"
                   aria-invalid={!!errors.endDate}
                   {...register('endDate')}
                 />
                 {errors.endDate && <p className="text-xs text-red-600">{errors.endDate.message}</p>}
               </div>
-              <div className="space-y-1.5">
+              <div className="col-span-2 space-y-1.5 sm:col-span-1">
                 <label htmlFor="departureTime" className="flex items-center gap-1 text-xs font-semibold text-slate-700 sm:gap-2 sm:text-sm">
                   <Clock className="size-3.5 text-sky-600 sm:size-4" />
                   出発時刻
@@ -114,7 +114,7 @@ const PlanCreatePresentation = ({
                   id="departureTime"
                   type="time"
                   defaultValue="09:00"
-                  className="h-9 px-2 text-sm sm:h-11 sm:px-3"
+                  className="h-9 px-1.5 text-base sm:h-11 sm:px-3"
                   aria-invalid={!!errors.departureTime}
                   {...register('departureTime')}
                 />
@@ -133,7 +133,7 @@ const PlanCreatePresentation = ({
                   id="departure"
                   type="text"
                   placeholder="例）那覇空港"
-                  className="h-9 px-2 text-sm sm:h-11 sm:px-3"
+                  className="h-9 px-2 text-base sm:h-11 sm:px-3"
                   aria-invalid={!!errors.departure}
                   {...register('departure')}
                 />
@@ -148,7 +148,7 @@ const PlanCreatePresentation = ({
                   id="baseStay"
                   type="text"
                   placeholder="例）那覇市内ホテル"
-                  className="h-9 px-2 text-sm sm:h-11 sm:px-3"
+                  className="h-9 px-2 text-base sm:h-11 sm:px-3"
                   aria-invalid={!!errors.baseStay}
                   {...register('baseStay')}
                 />
@@ -173,7 +173,7 @@ const PlanCreatePresentation = ({
                     <Input
                       type="text"
                       placeholder="スポット名"
-                      className="h-9 min-w-0 flex-1 px-2 text-sm sm:h-10 sm:px-3"
+                      className="h-9 min-w-0 flex-1 px-2 text-base sm:h-10 sm:px-3"
                       aria-invalid={!!(Array.isArray(errors.spots) && errors.spots[index]?.value)}
                       {...register(`spots.${index}.value`)}
                     />
