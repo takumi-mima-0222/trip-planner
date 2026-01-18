@@ -49,38 +49,36 @@ const PlanDetailPresentation = ({
           </Button>
 
           {/* Summary Card */}
-          <Card className={`p-6 text-white shadow-xl ${summary.isFeasible ? 'bg-gradient-to-br from-sky-500 to-cyan-500' : 'bg-gradient-to-br from-amber-500 to-orange-500'}`}>
-            <div className="mb-4 flex items-start justify-between">
-              <div className="flex items-center gap-3">
-                {summary.isFeasible ? (
-                  <CheckCircle className="size-6" />
-                ) : (
-                  <AlertTriangle className="size-6" />
-                )}
-                <h4 className="text-xl font-bold">{summary.title}</h4>
-              </div>
+          <Card className={`p-4 text-white shadow-xl sm:p-6 ${summary.isFeasible ? 'bg-gradient-to-br from-sky-500 to-cyan-500' : 'bg-gradient-to-br from-amber-500 to-orange-500'}`}>
+            <div className="mb-3 flex items-start gap-2 sm:mb-4 sm:gap-3">
+              {summary.isFeasible ? (
+                <CheckCircle className="size-5 shrink-0 sm:size-6" />
+              ) : (
+                <AlertTriangle className="size-5 shrink-0 sm:size-6" />
+              )}
+              <h4 className="text-lg font-bold sm:text-xl">{summary.title}</h4>
             </div>
             
             {/* Feasibility Summary */}
-            <p className="mb-4 rounded-lg bg-white/20 p-3 text-sm">
+            <p className="mb-3 rounded-lg bg-white/20 p-2.5 text-xs sm:mb-4 sm:p-3 sm:text-sm">
               {summary.feasibilitySummary}
             </p>
 
-            <div className="grid gap-2 text-sm sm:grid-cols-2">
+            <div className="space-y-1.5 text-xs sm:grid sm:grid-cols-2 sm:gap-2 sm:space-y-0 sm:text-sm">
               <div className="flex items-center gap-2">
-                <Calendar className="size-4" />
-                <span>期間：{summary.startDate} 〜 {summary.endDate}（{summary.totalDays}日間）</span>
+                <Calendar className="size-3.5 shrink-0 sm:size-4" />
+                <span className="truncate">{summary.startDate} 〜 {summary.endDate}（{summary.totalDays}日間）</span>
               </div>
               <div className="flex items-center gap-2">
-                <MapPin className="size-4" />
-                <span>出発：{summary.startTime} / {summary.startLocation}</span>
+                <MapPin className="size-3.5 shrink-0 sm:size-4" />
+                <span className="truncate">出発：{summary.startTime} / {summary.startLocation}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Home className="size-4" />
-                <span>宿泊：{summary.baseStay}</span>
+                <Home className="size-3.5 shrink-0 sm:size-4" />
+                <span className="truncate">宿泊：{summary.baseStay}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Clock className="size-4" />
+                <Clock className="size-3.5 shrink-0 sm:size-4" />
                 <span>スポット数：{summary.spotCount}</span>
               </div>
             </div>
@@ -122,12 +120,12 @@ const PlanDetailPresentation = ({
           ))}
 
           {/* Actions */}
-          <div className="flex justify-center gap-4 pt-4">
-            <Button variant="outline" onClick={onBackToCreate}>
+          <div className="flex flex-col gap-3 pt-4 sm:flex-row sm:justify-center sm:gap-4">
+            <Button variant="outline" onClick={onBackToCreate} className="w-full sm:w-auto">
               <ArrowLeft className="mr-2 size-4" />
               条件を変更
             </Button>
-            <Button onClick={onCreateNew} className="bg-sky-600 hover:bg-sky-700">
+            <Button onClick={onCreateNew} className="w-full bg-sky-600 hover:bg-sky-700 sm:w-auto">
               <Plus className="mr-2 size-4" />
               新しいプランを作成
             </Button>
@@ -141,19 +139,19 @@ const PlanDetailPresentation = ({
 // Day Plan Component
 function DayPlan({ day }: { day: TripPlanDay; isLastDay: boolean }) {
   return (
-    <Card className="bg-white p-6 shadow-lg md:p-8">
-      <div className="mb-6 border-b border-slate-200 pb-4">
-        <div className="flex items-center gap-3">
-          <div className="flex size-10 items-center justify-center rounded-full bg-sky-100 text-sm font-bold text-sky-700">
+    <Card className="bg-white p-4 shadow-lg sm:p-6 md:p-8">
+      <div className="mb-4 border-b border-slate-200 pb-3 sm:mb-6 sm:pb-4">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex size-8 items-center justify-center rounded-full bg-sky-100 text-xs font-bold text-sky-700 sm:size-10 sm:text-sm">
             {day.dayNumber}
           </div>
           <div>
-            <h3 className="text-lg font-bold text-slate-900">{day.date}</h3>
-            <p className="text-sm text-sky-600">{day.theme}</p>
+            <h3 className="text-base font-bold text-slate-900 sm:text-lg">{day.date}</h3>
+            <p className="text-xs text-sky-600 sm:text-sm">{day.theme}</p>
           </div>
         </div>
       </div>
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {day.items.map((item, index) => (
           <TimelineItem 
             key={`${day.dayNumber}-${index}`} 
@@ -214,26 +212,26 @@ function TimelineItem({ item, isLast }: { item: TripPlanItem; isLast: boolean })
   };
 
   return (
-    <div className="flex gap-4 md:gap-6">
+    <div className="flex gap-2 sm:gap-4 md:gap-6">
       {/* Time */}
-      <div className="w-20 shrink-0 pt-1 text-right">
-        <span className="text-sm font-bold text-sky-700">{item.startTime}</span>
-        <span className="block text-xs text-slate-400">〜 {item.endTime}</span>
+      <div className="w-14 shrink-0 pt-1 text-right sm:w-20">
+        <span className="text-xs font-bold text-sky-700 sm:text-sm">{item.startTime}</span>
+        <span className="block text-[10px] text-slate-400 sm:text-xs">〜 {item.endTime}</span>
       </div>
 
       {/* Timeline Line */}
       <div className="relative flex flex-col items-center">
-        <div className={`flex size-6 items-center justify-center rounded-full text-white ring-4 ${getTypeColor(item.type)}`}>
-          {getTypeIcon(item.type)}
+        <div className={`flex size-5 items-center justify-center rounded-full text-white ring-2 sm:size-6 sm:ring-4 ${getTypeColor(item.type)}`}>
+          <span className="scale-75 sm:scale-100">{getTypeIcon(item.type)}</span>
         </div>
         {!isLast && <div className="w-0.5 flex-1 bg-slate-200" />}
       </div>
 
       {/* Content */}
-      <div className="flex-1 pb-4">
-        <div className="mb-1 flex items-center gap-2">
-          <h5 className="text-base font-bold text-slate-900">{item.name}</h5>
-          <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+      <div className="min-w-0 flex-1 pb-4">
+        <div className="mb-1 flex flex-wrap items-center gap-1.5 sm:gap-2">
+          <h5 className="text-sm font-bold text-slate-900 sm:text-base">{item.name}</h5>
+          <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-medium sm:px-2 sm:text-xs ${
             item.type === 'spot' ? 'bg-sky-100 text-sky-700' :
             item.type === 'meal' ? 'bg-amber-100 text-amber-700' :
             item.type === 'hotel' ? 'bg-purple-100 text-purple-700' :
@@ -243,12 +241,12 @@ function TimelineItem({ item, isLast }: { item: TripPlanItem; isLast: boolean })
           </span>
         </div>
         {item.stayMinutes > 0 && (
-          <p className="mb-1 text-sm font-medium text-slate-500">
+          <p className="mb-1 text-xs font-medium text-slate-500 sm:text-sm">
             {item.stayMinutes}分
           </p>
         )}
         {item.detail && (
-          <p className="text-sm leading-relaxed text-slate-600">{item.detail}</p>
+          <p className="text-xs leading-relaxed text-slate-600 sm:text-sm">{item.detail}</p>
         )}
       </div>
     </div>
