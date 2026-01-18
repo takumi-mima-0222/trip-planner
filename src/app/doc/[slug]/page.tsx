@@ -55,15 +55,6 @@ export default async function DocDetailPage({ params }: Props) {
         </nav>
 
         <article className="bg-white rounded-xl shadow-lg p-6 md:p-8">
-          <header className="mb-8">
-            <h1 className="text-3xl font-bold text-sky-900 mb-2">
-              {doc.title}
-            </h1>
-            {doc.description && (
-              <p className="text-slate-600">{doc.description}</p>
-            )}
-          </header>
-
           <div
             className="prose prose-slate max-w-none prose-headings:text-sky-900 prose-p:text-slate-700 prose-a:text-sky-600 prose-strong:text-slate-800 prose-code:text-slate-800 prose-pre:bg-slate-100 prose-pre:text-slate-800 prose-li:text-slate-700"
             dangerouslySetInnerHTML={{ __html: doc.contentHtml }}
