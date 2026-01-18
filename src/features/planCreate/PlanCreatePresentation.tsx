@@ -59,8 +59,6 @@ const PlanCreatePresentation = ({
             無理のない旅行プランを自動作成。
           </h2>
           <p className="text-sm text-pretty text-slate-600 sm:text-base md:text-lg">
-            出発地点・宿泊地・行きたいスポットを入力すると、
-            <br className="hidden md:block" />
             AIが移動時間を考慮し、現実的に回れる順番とスケジュールを提案します。
           </p>
         </section>

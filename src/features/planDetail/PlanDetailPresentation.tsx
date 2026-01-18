@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { MapPin, Clock, Calendar, Home, AlertTriangle, Lightbulb, CheckCircle, XCircle, ArrowLeft, Plus, Utensils, Car, Building } from 'lucide-react'
+import { MapPin, Clock, Calendar, Home, AlertTriangle, Lightbulb, CheckCircle, XCircle, ArrowLeft, Plus, Utensils, Car, Building, Share2, Check } from 'lucide-react'
 import { PlanSummaryProps, TripPlanDay, TripPlanItem, TripPlanIssue, TripPlanAlternative } from './planDetail.type'
 
 export interface PlanDetailPresentationProps {
@@ -12,6 +12,8 @@ export interface PlanDetailPresentationProps {
   alternatives: TripPlanAlternative[];
   onBackToCreate: () => void;
   onCreateNew: () => void;
+  onSharePlan: () => Promise<boolean>;
+  isShareCopied: boolean;
 }
 
 const PlanDetailPresentation = ({
@@ -21,6 +23,8 @@ const PlanDetailPresentation = ({
   alternatives,
   onBackToCreate,
   onCreateNew,
+  onSharePlan,
+  isShareCopied,
 }: PlanDetailPresentationProps) => {
   if (!summary) {
     return (
@@ -124,6 +128,23 @@ const PlanDetailPresentation = ({
             <Button variant="outline" onClick={onBackToCreate} className="w-full sm:w-auto">
               <ArrowLeft className="mr-2 size-4" />
               条件を変更
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={onSharePlan} 
+              className={`w-full sm:w-auto ${isShareCopied ? 'border-green-500 text-green-600' : ''}`}
+            >
+              {isShareCopied ? (
+                <>
+                  <Check className="mr-2 size-4" />
+                  コピーしました！
+                </>
+              ) : (
+                <>
+                  <Share2 className="mr-2 size-4" />
+                  共有リンクをコピー
+                </>
+              )}
             </Button>
             <Button onClick={onCreateNew} className="w-full bg-sky-600 hover:bg-sky-700 sm:w-auto">
               <Plus className="mr-2 size-4" />
