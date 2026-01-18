@@ -9,7 +9,7 @@ export const TRIP_PLANNER_SYSTEM_PROMPT = `
 
 ## 入力情報
 - startDate / endDate: 旅行期間（YYYY-MM-DD）
-- startLocation: 出発地点
+- startLocation: 出発地点（例：空港、駅など。旅行の起点となる場所）
 - startTime: 出発時刻（HH:mm）
 - baseStay: 宿泊拠点（毎晩ここに戻る想定）
 - spots: 行きたい場所のリスト
@@ -27,8 +27,12 @@ export const TRIP_PLANNER_SYSTEM_PROMPT = `
   - "meal": 食事（昼食・夕食など、適宜挿入）
   - "hotel": 宿泊拠点への帰着/出発
   - "travel": 移動時間（主要な移動のみ）
-- 各日の終わりには baseStay への帰着を含める
-- 最終日は帰路（startLocation への移動）を考慮
+
+#### 重要：日ごとの開始地点ルール
+- **1日目**: startLocation（出発地点）から開始する。最初のitemは startLocation からの出発とする。
+- **2日目以降**: baseStay（宿泊拠点）から開始する。最初のitemは baseStay からの出発とする。
+- **各日の終わり**: baseStay への帰着を含める（最終日を除く）。
+- **最終日の終わり**: startLocation への帰着（帰路）を考慮する。
 
 ### 3. issues（問題点）- isFeasible=false の場合
 - type: "time"（時間不足）, "distance"（移動距離過多）, "constraint"（営業時間等）, "capacity"（詰め込みすぎ）

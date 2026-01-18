@@ -7,7 +7,7 @@ import PlanCreatePresentation from './PlanCreatePresentation';
 
 export const PlanCreateContainer = () => {
   const { register, errors, handleSubmit, control } = usePlanFrom();
-  const { onSubmit } = usePlanCreate();
+  const { onSubmit, loading, error } = usePlanCreate();
   const { fields, addSpot, removeSpot, canRemove } = usePlanSpots(control);
 
   return (
@@ -19,6 +19,8 @@ export const PlanCreateContainer = () => {
         addSpot={addSpot}
         removeSpot={removeSpot}
         canRemove={canRemove}
+        loading={loading}
+        apiError={error}
     />
   )
 }

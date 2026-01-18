@@ -1,146 +1,339 @@
 "use client"
+
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { MapPin, Clock, Share2 } from 'lucide-react'
-
+import { MapPin, Clock, Calendar, Home, AlertTriangle, Lightbulb, CheckCircle, XCircle, ArrowLeft, Plus, Utensils, Car, Building } from 'lucide-react'
+import { PlanSummaryProps, TripPlanDay, TripPlanItem, TripPlanIssue, TripPlanAlternative } from './planDetail.type'
 
 export interface PlanDetailPresentationProps {
+  summary: PlanSummaryProps | null;
+  days: TripPlanDay[];
+  issues: TripPlanIssue[];
+  alternatives: TripPlanAlternative[];
+  onBackToCreate: () => void;
+  onCreateNew: () => void;
 }
 
-const PlanDetailPresentation = ({}: PlanDetailPresentationProps) => {
+const PlanDetailPresentation = ({
+  summary,
+  days,
+  issues,
+  alternatives,
+  onBackToCreate,
+  onCreateNew,
+}: PlanDetailPresentationProps) => {
+  if (!summary) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-sky-50 to-amber-50/30">
+        <main className="mx-auto max-w-3xl px-4 py-8 md:py-12">
+          <Card className="bg-white p-8 text-center shadow-lg">
+            <p className="mb-4 text-slate-600">プランが見つかりません</p>
+            <Button onClick={onBackToCreate} className="bg-sky-600 hover:bg-sky-700">
+              <ArrowLeft className="mr-2 size-4" />
+              プラン作成へ戻る
+            </Button>
+          </Card>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-sky-50 to-amber-50/30">
-        <main className="mx-auto max-w-3xl px-4 py-8 md:py-12">
-            {/* Sample Plan Section */}
-            <section className="space-y-6">
-                {/* Section Header */}
-                <div className="text-center">
-                    <h3 className="mb-2 text-2xl font-bold text-sky-900">サンプルプラン</h3>
-                    <p className="text-sm text-slate-600">
-                    プラン作成後は、このようなタイムライン形式で1日のスケジュールが表示されます。
-                    </p>
-                </div>
+      <main className="mx-auto max-w-3xl px-4 py-8 md:py-12">
+        <section className="space-y-6">
+          {/* Back Button */}
+          <Button variant="ghost" onClick={onBackToCreate} className="text-sky-700 hover:text-sky-900">
+            <ArrowLeft className="mr-2 size-4" />
+            戻る
+          </Button>
 
-                {/* Summary Card */}
-                <Card className="bg-gradient-to-br from-sky-500 to-cyan-500 p-6 text-white shadow-xl">
-                    <div className="mb-4 flex items-start justify-between">
-                    <h4 className="text-xl font-bold">沖縄1日観光プラン（サンプル）</h4>
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-white hover:bg-white/20 hover:text-white"
-                    >
-                        <Share2 className="mr-2 size-4" />
-                        共有リンクをコピー
-                    </Button>
-                    </div>
-                    <div className="space-y-2 text-sm">
-                    <div className="flex items-center gap-2">
-                        <MapPin className="size-4" />
-                        <span>出発：09:00 / 那覇空港</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <MapPin className="size-4" />
-                        <span>終了：18:00 / アメリカンビレッジ周辺</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <Clock className="size-4" />
-                        <span>スポット数：4 / 移動合計：約2時間30分</span>
-                    </div>
-                    </div>
-                </Card>
+          {/* Summary Card */}
+          <Card className={`p-6 text-white shadow-xl ${summary.isFeasible ? 'bg-gradient-to-br from-sky-500 to-cyan-500' : 'bg-gradient-to-br from-amber-500 to-orange-500'}`}>
+            <div className="mb-4 flex items-start justify-between">
+              <div className="flex items-center gap-3">
+                {summary.isFeasible ? (
+                  <CheckCircle className="size-6" />
+                ) : (
+                  <AlertTriangle className="size-6" />
+                )}
+                <h4 className="text-xl font-bold">{summary.title}</h4>
+              </div>
+            </div>
+            
+            {/* Feasibility Summary */}
+            <p className="mb-4 rounded-lg bg-white/20 p-3 text-sm">
+              {summary.feasibilitySummary}
+            </p>
 
-                {/* Timeline */}
-                <Card className="bg-white p-6 shadow-lg md:p-8">
-                    <div className="space-y-8">
-                    {/* Timeline Item 1 */}
-                    <TimelineItem
-                        time="09:30"
-                        title="首里城公園"
-                        duration="滞在 60分"
-                        description="那覇市内の人気観光スポットです。世界遺産に登録されている琉球王国の城跡を見学できます。"
-                    />
+            <div className="grid gap-2 text-sm sm:grid-cols-2">
+              <div className="flex items-center gap-2">
+                <Calendar className="size-4" />
+                <span>期間：{summary.startDate} 〜 {summary.endDate}（{summary.totalDays}日間）</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <MapPin className="size-4" />
+                <span>出発：{summary.startTime} / {summary.startLocation}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Home className="size-4" />
+                <span>宿泊：{summary.baseStay}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Clock className="size-4" />
+                <span>スポット数：{summary.spotCount}</span>
+              </div>
+            </div>
+          </Card>
 
-                    {/* Timeline Item 2 */}
-                    <TimelineItem
-                        time="11:30"
-                        title="国際通り"
-                        duration="滞在 90分"
-                        description="沖縄のメインストリート。お土産屋さんやレストランが立ち並ぶ賑やかな通りです。"
-                    />
+          {/* Issues Section */}
+          {issues.length > 0 && (
+            <Card className="border-amber-200 bg-amber-50 p-6 shadow-lg">
+              <h3 className="mb-4 flex items-center gap-2 text-lg font-bold text-amber-800">
+                <AlertTriangle className="size-5" />
+                注意点・問題点
+              </h3>
+              <div className="space-y-3">
+                {issues.map((issue, index) => (
+                  <IssueCard key={index} issue={issue} />
+                ))}
+              </div>
+            </Card>
+          )}
 
-                    {/* Timeline Item 3 */}
-                    <TimelineItem
-                        time="14:00"
-                        title="瀬長島ウミカジテラス"
-                        duration="滞在 90分"
-                        description="海が見える絶景スポット。おしゃれなカフェやショップが並んでいます。"
-                    />
+          {/* Alternatives Section */}
+          {alternatives.length > 0 && (
+            <Card className="border-sky-200 bg-sky-50 p-6 shadow-lg">
+              <h3 className="mb-4 flex items-center gap-2 text-lg font-bold text-sky-800">
+                <Lightbulb className="size-5" />
+                代替案・提案
+              </h3>
+              <div className="space-y-3">
+                {alternatives.map((alt) => (
+                  <AlternativeCard key={alt.id} alternative={alt} />
+                ))}
+              </div>
+            </Card>
+          )}
 
-                    {/* Timeline Item 4 */}
-                    <TimelineItem
-                        time="17:00"
-                        title="アメリカンビレッジ"
-                        duration="滞在 自由"
-                        description="アメリカの雰囲気が漂う人気のショッピングエリア。夕日を見ながら散策できます。"
-                        isLast
-                    />
-                    </div>
-                </Card>
+          {/* Day Plans */}
+          {days.map((day, index) => (
+            <DayPlan key={day.dayNumber} day={day} isLastDay={index === days.length - 1} />
+          ))}
 
-                {/* Map Placeholder */}
-                <Card className="overflow-hidden bg-white shadow-lg">
-                    <div className="p-6">
-                    <h4 className="mb-4 text-lg font-bold text-slate-900">ルートのイメージ</h4>
-                    <div className="flex h-64 items-center justify-center rounded-lg bg-slate-100 md:h-80">
-                        <div className="text-center">
-                        <MapPin className="mx-auto mb-2 size-12 text-slate-300" />
-                        <p className="text-sm font-medium text-slate-400">Map preview</p>
-                        </div>
-                    </div>
-                    <p className="mt-4 text-center text-xs text-slate-500">
-                        実際の実装ではここにGoogleマップのルート表示が入ります。
-                    </p>
-                    </div>
-                </Card>
-            </section>
-        </main>
+          {/* Actions */}
+          <div className="flex justify-center gap-4 pt-4">
+            <Button variant="outline" onClick={onBackToCreate}>
+              <ArrowLeft className="mr-2 size-4" />
+              条件を変更
+            </Button>
+            <Button onClick={onCreateNew} className="bg-sky-600 hover:bg-sky-700">
+              <Plus className="mr-2 size-4" />
+              新しいプランを作成
+            </Button>
+          </div>
+        </section>
+      </main>
     </div>
   )
 }
 
-function TimelineItem({
-  time,
-  title,
-  duration,
-  description,
-  isLast = false,
-}: {
-  time: string
-  title: string
-  duration: string
-  description: string
-  isLast?: boolean
-}) {
+// Day Plan Component
+function DayPlan({ day }: { day: TripPlanDay; isLastDay: boolean }) {
   return (
-    <div className="flex gap-6">
+    <Card className="bg-white p-6 shadow-lg md:p-8">
+      <div className="mb-6 border-b border-slate-200 pb-4">
+        <div className="flex items-center gap-3">
+          <div className="flex size-10 items-center justify-center rounded-full bg-sky-100 text-sm font-bold text-sky-700">
+            {day.dayNumber}
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-slate-900">{day.date}</h3>
+            <p className="text-sm text-sky-600">{day.theme}</p>
+          </div>
+        </div>
+      </div>
+      <div className="space-y-6">
+        {day.items.map((item, index) => (
+          <TimelineItem 
+            key={`${day.dayNumber}-${index}`} 
+            item={item} 
+            isLast={index === day.items.length - 1} 
+          />
+        ))}
+      </div>
+    </Card>
+  )
+}
+
+// Timeline Item Component
+function TimelineItem({ item, isLast }: { item: TripPlanItem; isLast: boolean }) {
+  const getTypeIcon = (type: TripPlanItem['type']) => {
+    switch (type) {
+      case 'spot':
+        return <MapPin className="size-4" />;
+      case 'meal':
+        return <Utensils className="size-4" />;
+      case 'hotel':
+        return <Building className="size-4" />;
+      case 'travel':
+        return <Car className="size-4" />;
+      default:
+        return <MapPin className="size-4" />;
+    }
+  };
+
+  const getTypeColor = (type: TripPlanItem['type']) => {
+    switch (type) {
+      case 'spot':
+        return 'bg-sky-500 ring-sky-100';
+      case 'meal':
+        return 'bg-amber-500 ring-amber-100';
+      case 'hotel':
+        return 'bg-purple-500 ring-purple-100';
+      case 'travel':
+        return 'bg-slate-400 ring-slate-100';
+      default:
+        return 'bg-sky-500 ring-sky-100';
+    }
+  };
+
+  const getTypeLabel = (type: TripPlanItem['type']) => {
+    switch (type) {
+      case 'spot':
+        return '観光';
+      case 'meal':
+        return '食事';
+      case 'hotel':
+        return '宿泊';
+      case 'travel':
+        return '移動';
+      default:
+        return '';
+    }
+  };
+
+  return (
+    <div className="flex gap-4 md:gap-6">
       {/* Time */}
-      <div className="w-16 shrink-0 pt-1 text-right">
-        <span className="text-sm font-bold text-sky-700">{time}</span>
+      <div className="w-20 shrink-0 pt-1 text-right">
+        <span className="text-sm font-bold text-sky-700">{item.startTime}</span>
+        <span className="block text-xs text-slate-400">〜 {item.endTime}</span>
       </div>
 
       {/* Timeline Line */}
       <div className="relative flex flex-col items-center">
-        <div className="size-3 rounded-full bg-sky-500 ring-4 ring-sky-100" />
-        {!isLast && <div className="w-0.5 flex-1 bg-sky-200" />}
+        <div className={`flex size-6 items-center justify-center rounded-full text-white ring-4 ${getTypeColor(item.type)}`}>
+          {getTypeIcon(item.type)}
+        </div>
+        {!isLast && <div className="w-0.5 flex-1 bg-slate-200" />}
       </div>
 
       {/* Content */}
-      <div className="flex-1 pb-2">
-        <h5 className="mb-1 text-lg font-bold text-slate-900">{title}</h5>
-        <p className="mb-2 text-sm font-medium text-sky-600">{duration}</p>
-        <p className="text-sm leading-relaxed text-slate-600">{description}</p>
+      <div className="flex-1 pb-4">
+        <div className="mb-1 flex items-center gap-2">
+          <h5 className="text-base font-bold text-slate-900">{item.name}</h5>
+          <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+            item.type === 'spot' ? 'bg-sky-100 text-sky-700' :
+            item.type === 'meal' ? 'bg-amber-100 text-amber-700' :
+            item.type === 'hotel' ? 'bg-purple-100 text-purple-700' :
+            'bg-slate-100 text-slate-600'
+          }`}>
+            {getTypeLabel(item.type)}
+          </span>
+        </div>
+        {item.stayMinutes > 0 && (
+          <p className="mb-1 text-sm font-medium text-slate-500">
+            {item.stayMinutes}分
+          </p>
+        )}
+        {item.detail && (
+          <p className="text-sm leading-relaxed text-slate-600">{item.detail}</p>
+        )}
       </div>
+    </div>
+  )
+}
+
+// Issue Card Component
+function IssueCard({ issue }: { issue: TripPlanIssue }) {
+  const getSeverityStyle = (severity: TripPlanIssue['severity']) => {
+    switch (severity) {
+      case 'critical':
+        return 'border-red-300 bg-red-50';
+      case 'warning':
+        return 'border-amber-300 bg-amber-50';
+      case 'info':
+        return 'border-blue-300 bg-blue-50';
+      default:
+        return 'border-slate-300 bg-slate-50';
+    }
+  };
+
+  const getSeverityIcon = (severity: TripPlanIssue['severity']) => {
+    switch (severity) {
+      case 'critical':
+        return <XCircle className="size-5 text-red-600" />;
+      case 'warning':
+        return <AlertTriangle className="size-5 text-amber-600" />;
+      case 'info':
+        return <Lightbulb className="size-5 text-blue-600" />;
+      default:
+        return null;
+    }
+  };
+
+  const getTypeLabel = (type: TripPlanIssue['type']) => {
+    switch (type) {
+      case 'time':
+        return '時間';
+      case 'distance':
+        return '距離';
+      case 'constraint':
+        return '制約';
+      case 'capacity':
+        return '容量';
+      default:
+        return type;
+    }
+  };
+
+  return (
+    <div className={`rounded-lg border p-4 ${getSeverityStyle(issue.severity)}`}>
+      <div className="mb-2 flex items-center gap-2">
+        {getSeverityIcon(issue.severity)}
+        <span className="text-xs font-medium text-slate-500">{getTypeLabel(issue.type)}</span>
+      </div>
+      <p className="text-sm text-slate-700">{issue.description}</p>
+      {issue.affectedSpots.length > 0 && (
+        <div className="mt-2 flex flex-wrap gap-1">
+          {issue.affectedSpots.map((spot, index) => (
+            <span key={index} className="rounded bg-white/50 px-2 py-0.5 text-xs text-slate-600">
+              {spot}
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// Alternative Card Component
+function AlternativeCard({ alternative }: { alternative: TripPlanAlternative }) {
+  return (
+    <div className="rounded-lg border border-sky-200 bg-white p-4">
+      <h4 className="mb-2 font-bold text-sky-800">{alternative.title}</h4>
+      <p className="mb-3 text-sm text-slate-600">{alternative.description}</p>
+      {alternative.changes.length > 0 && (
+        <ul className="space-y-1">
+          {alternative.changes.map((change, index) => (
+            <li key={index} className="flex items-start gap-2 text-sm text-slate-600">
+              <CheckCircle className="mt-0.5 size-4 shrink-0 text-sky-500" />
+              {change}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   )
 }

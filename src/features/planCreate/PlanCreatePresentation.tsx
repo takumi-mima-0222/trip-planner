@@ -4,7 +4,7 @@ import React from 'react'
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { X, Plus, MapPin, Clock, Calendar, Home } from 'lucide-react'
+import { X, Plus, MapPin, Clock, Calendar, Home, Loader2 } from 'lucide-react'
 import { FieldErrors, UseFormRegister, FieldArrayWithId } from 'react-hook-form';
 import { PlanCreateInput } from './planCreate.type';
 
@@ -16,6 +16,8 @@ export interface PlanCreatePresentationProps {
   addSpot: () => void;
   removeSpot: (index: number) => void;
   canRemove: boolean;
+  loading: boolean;
+  apiError: string | null;
 }
 
 const PlanCreatePresentation = ({
@@ -25,7 +27,26 @@ const PlanCreatePresentation = ({
   fields, 
   addSpot, 
   removeSpot, 
-  canRemove}: PlanCreatePresentationProps) => {
+  canRemove,
+  loading,
+  apiError,
+}: PlanCreatePresentationProps) => {
+  // ローディング画面
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-sky-50 to-amber-50/30">
+        <Card className="mx-4 w-full max-w-md bg-white p-8 text-center shadow-lg">
+          <Loader2 className="mx-auto mb-4 size-12 animate-spin text-sky-600" />
+          <h2 className="mb-2 text-xl font-bold text-sky-900">プランを作成中...</h2>
+          <p className="text-sm text-slate-600">
+            AIが最適な旅行プランを考えています。<br />
+            しばらくお待ちください。
+          </p>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-sky-50 to-amber-50/30">
       {/* Main Content */}
@@ -39,6 +60,13 @@ const PlanCreatePresentation = ({
             出発地点と行きたいスポットを入力すると、AIが効率の良い順番とスケジュールを提案します。
           </p>
         </section>
+
+        {/* API Error */}
+        {apiError && (
+          <Card className="mb-6 border-red-200 bg-red-50 p-4">
+            <p className="text-sm text-red-600">{apiError}</p>
+          </Card>
+        )}
 
         {/* Form Card */}
         <Card className="mb-16 bg-white p-6 shadow-lg md:p-8">
@@ -198,9 +226,6 @@ const PlanCreatePresentation = ({
               >
                 プランを作成
               </Button>
-              <p className="text-center text-xs text-slate-500">
-                ※デモ用のため、現在は仮のプランが表示されます。
-              </p>
             </div>
           </form>
         </Card>

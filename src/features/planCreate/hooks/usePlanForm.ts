@@ -2,9 +2,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { planCreateSchema, PlanCreateInput } from '../planCreate.type';
 import { getTodayString } from '@/lib/utils';
+import { useSearchConditionStore, selectSearchCondition } from '@/shared/store/useSearchConditionStore';
 
 export const usePlanFrom = () => {
     const today = getTodayString();
+    const savedCondition = useSearchConditionStore(selectSearchCondition);
     
     const {
         register,
@@ -16,12 +18,14 @@ export const usePlanFrom = () => {
         mode: 'onChange',
         shouldFocusError: true,
         defaultValues: {
-            startDate: today,
-            endDate: today,
-            departure: '',
-            departureTime: '09:00',
-            baseStay: '',
-            spots: [{ value: '' }],
+            startDate: savedCondition?.startDate || today,
+            endDate: savedCondition?.endDate || today,
+            departure: savedCondition?.departure || '',
+            departureTime: savedCondition?.departureTime || '09:00',
+            baseStay: savedCondition?.baseStay || '',
+            spots: savedCondition?.spots?.length 
+                ? savedCondition.spots.map((s) => ({ value: s }))
+                : [{ value: '' }],
         },
     });
 

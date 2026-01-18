@@ -1,11 +1,14 @@
 'use client'
 
 import { PlanDetailContainer } from "@/features/planDetail/PlanDetailContainer";
+import { RequirePlanGuard } from "@/shared/guards";
 
 export default function PlanPage() {
   return (
-    <main>
-      <PlanDetailContainer />
-    </main>
+    <RequirePlanGuard>
+      <main>
+        <PlanDetailContainer />
+      </main>
+    </RequirePlanGuard>
   );
 }

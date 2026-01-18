@@ -2,6 +2,7 @@ import { useRouter } from 'next/navigation';
 import { PlanCreateInput } from '../planCreate.type';
 import { createTripPlanAction } from '../ai/createTripPlanAction';
 import { useTripPlanStore } from '@/shared/store/useTripPlanStore';
+import { useSearchConditionStore } from '@/shared/store/useSearchConditionStore';
 
 /**
  * フォーム送信＆AIルート計算用カスタムフック
@@ -9,9 +10,21 @@ import { useTripPlanStore } from '@/shared/store/useTripPlanStore';
 export const usePlanCreate = () => {
 	const router = useRouter();
 	const { setLoading, setPlan, setError, status } = useTripPlanStore();
+	const { setCondition } = useSearchConditionStore();
 
 	const onSubmit = async (data: PlanCreateInput) => {
 		setLoading();
+		
+		// 検索条件をストアに保存
+		setCondition({
+			startDate: data.startDate,
+			endDate: data.endDate,
+			departure: data.departure,
+			departureTime: data.departureTime,
+			baseStay: data.baseStay,
+			spots: data.spots.map((s) => s.value),
+		});
+
 		try {
 			// OpenAIによるルート計算処理（Server Action経由）
 			const result = await createTripPlanAction({
