@@ -53,11 +53,13 @@ const PlanCreatePresentation = ({
       <main className="mx-auto max-w-3xl px-4 py-8 md:py-12">
         {/* Hero Section */}
         <section className="mb-12 text-center">
-          <h2 className="mb-4 text-3xl font-bold text-balance text-sky-900 md:text-4xl">
-            行きたい場所を入れるだけで、旅行プランを自動作成
+          <h2 className="mb-4 text-2xl font-bold text-balance text-sky-900 md:text-4xl">
+            行きたい場所を入れるだけで、<br />
+            無理のない旅行プランを自動作成。
           </h2>
           <p className="text-pretty text-slate-600 md:text-lg">
-            出発地点と行きたいスポットを入力すると、AIが効率の良い順番とスケジュールを提案します。
+            出発地点・宿泊地・行きたいスポットを入力すると、<br />
+            AIが移動時間を考慮し、現実的に回れる順番とスケジュールを提案します。
           </p>
         </section>
 
