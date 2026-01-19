@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 import { getAllDocsMeta, type DocCategory } from '@/features/docs/lib/docs';
 
 // サイトのベースURL（本番環境に合わせて変更してください）
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://tabikumi.com';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://tabikumi.vercel.app';
 
 /**
  * 静的ページの定義
