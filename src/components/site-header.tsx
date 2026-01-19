@@ -12,7 +12,7 @@ const navItems = [
   { href: '/tips', label: '旅行ノウハウ', icon: Lightbulb },
   { href: '/faq', label: 'よくある質問', icon: HelpCircle },
   { href: '/privacy-policy', label: 'プライバシーポリシー', icon: Shield },
-  { href: 'https://docs.google.com/forms/d/e/xxxxx/viewform', label: 'お問い合わせ', icon: Mail, external: true },
+  { href: 'https://docs.google.com/forms/d/e/1FAIpQLSfBa0yIsgUAhutsRyuKzVpH-ueacPJqbP9-1JrekJg5lcj3Ww/viewform?usp=publish-editor', label: 'お問い合わせ', icon: Mail, external: true },
 ]
 
 const SiteHeader = () => {

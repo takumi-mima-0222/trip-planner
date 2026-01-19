@@ -93,10 +93,14 @@ const faqItems = [
     question: "問い合わせ先はありますか？",
     answer: (
       <>
-        <p>現在、お問い合わせフォームは準備中です。</p>
-        <p className="mt-2">
-          不具合やご意見がある場合は、今後設置予定の窓口をご利用ください。
-        </p>
+          <p>お問い合わせフォームをご利用いただけます。</p>
+          <p className="mt-2">
+            不具合やご意見、ご要望などがある場合は、
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfBa0yIsgUAhutsRyuKzVpH-ueacPJqbP9-1JrekJg5lcj3Ww/viewform?usp=publish-editor" className="text-sky-600 hover:underline">
+            お問い合わせフォーム
+            </a>
+            からご連絡ください。
+          </p>
       </>
     ),
   },
