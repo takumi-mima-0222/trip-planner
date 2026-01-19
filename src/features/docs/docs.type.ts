@@ -4,6 +4,17 @@
 export interface DocFrontmatter {
   title?: string;
   description?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+/**
+ * 目次アイテムの型定義
+ */
+export interface TocItem {
+  id: string;
+  text: string;
+  level: number;
 }
 
 /**
@@ -13,6 +24,8 @@ export interface DocMeta {
   slug: string;
   title: string;
   description: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 /**
@@ -20,4 +33,5 @@ export interface DocMeta {
  */
 export interface DocData extends DocMeta {
   contentHtml: string;
+  toc: TocItem[];
 }

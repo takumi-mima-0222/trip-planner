@@ -3,12 +3,16 @@
 import React, { useState, useCallback, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, X, Home, FileText } from 'lucide-react'
+import { Menu, X, Home, BookOpen, Lightbulb, HelpCircle, Shield, Mail } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 
 const navItems = [
   { href: '/', label: 'ホーム', icon: Home },
-  { href: '/doc', label: 'ガイド', icon: FileText },
+  { href: '/guide', label: '使い方ガイド', icon: BookOpen },
+  { href: '/tips', label: '旅行ノウハウ', icon: Lightbulb },
+  { href: '/faq', label: 'よくある質問', icon: HelpCircle },
+  { href: '/privacy-policy', label: 'プライバシーポリシー', icon: Shield },
+  { href: 'https://docs.google.com/forms/d/e/1FAIpQLSfBa0yIsgUAhutsRyuKzVpH-ueacPJqbP9-1JrekJg5lcj3Ww/viewform?usp=publish-editor', label: 'お問い合わせ', icon: Mail, external: true },
 ]
 
 const SiteHeader = () => {
@@ -47,8 +51,25 @@ const SiteHeader = () => {
           {/* デスクトップナビゲーション */}
           <nav className="hidden md:flex items-center gap-1">
             {navItems.map((item) => {
-              const isActive = pathname === item.href || 
-                (item.href !== '/' && pathname.startsWith(item.href))
+              const isExternal = 'external' in item && item.external
+              const isActive = !isExternal && (pathname === item.href || 
+                (item.href !== '/' && pathname.startsWith(item.href)))
+              
+              if (isExternal) {
+                return (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors text-sky-700 hover:bg-sky-50 hover:text-sky-900"
+                  >
+                    <item.icon className="h-4 w-4" />
+                    {item.label}
+                  </a>
+                )
+              }
+              
               return (
                 <Link
                   key={item.href}
@@ -97,8 +118,26 @@ const SiteHeader = () => {
       >
         <div className="flex flex-col p-4 gap-2">
           {navItems.map((item) => {
-            const isActive = pathname === item.href || 
-              (item.href !== '/' && pathname.startsWith(item.href))
+            const isExternal = 'external' in item && item.external
+            const isActive = !isExternal && (pathname === item.href || 
+              (item.href !== '/' && pathname.startsWith(item.href)))
+            
+            if (isExternal) {
+              return (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium transition-colors text-sky-700 hover:bg-sky-50 hover:text-sky-900"
+                  onClick={closeMenu}
+                >
+                  <item.icon className="h-5 w-5" />
+                  {item.label}
+                </a>
+              )
+            }
+            
             return (
               <Link
                 key={item.href}
