@@ -11,7 +11,7 @@ type Props = {
  * 静的パラメータ生成（SSG用）
  */
 export async function generateStaticParams() {
-  const slugs = await getAllDocSlugs();
+  const slugs = await getAllDocSlugs('tips');
   return slugs.map((slug) => ({ slug }));
 }
 
@@ -20,7 +20,7 @@ export async function generateStaticParams() {
  */
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const doc = await getDocBySlug(slug);
+  const doc = await getDocBySlug('tips', slug);
 
   if (!doc) {
     return {
@@ -29,14 +29,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: `${doc.title} | AI旅行プランナー`,
+    title: `${doc.title} | たびくみ`,
     description: doc.description || `${doc.title}の詳細ページです。`,
   };
 }
 
-export default async function DocDetailPage({ params }: Props) {
+export default async function TipsDetailPage({ params }: Props) {
   const { slug } = await params;
-  const doc = await getDocBySlug(slug);
+  const doc = await getDocBySlug('tips', slug);
 
   if (!doc) {
     notFound();
@@ -47,10 +47,10 @@ export default async function DocDetailPage({ params }: Props) {
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <nav className="mb-6">
           <Link
-            href="/doc"
+            href="/tips"
             className="text-sky-600 hover:underline text-sm"
           >
-            ← ガイド一覧に戻る
+            ← 旅行ノウハウ一覧に戻る
           </Link>
         </nav>
 

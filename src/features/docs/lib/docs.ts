@@ -4,15 +4,25 @@ import matter from 'gray-matter';
 import { marked } from 'marked';
 import type { DocFrontmatter, DocMeta, DocData } from '../docs.type';
 
-// Markdown記事のディレクトリパス
-const DOCS_DIRECTORY = path.join(process.cwd(), 'src/content/doc');
+// カテゴリ別のディレクトリパス
+const CONTENT_DIRECTORY = path.join(process.cwd(), 'src/content');
+
+export type DocCategory = 'guide' | 'tips';
 
 /**
- * すべての記事のslug一覧を取得
+ * カテゴリに対応するディレクトリパスを取得
  */
-export async function getAllDocSlugs(): Promise<string[]> {
+function getCategoryDirectory(category: DocCategory): string {
+  return path.join(CONTENT_DIRECTORY, category);
+}
+
+/**
+ * 指定カテゴリのすべての記事のslug一覧を取得
+ */
+export async function getAllDocSlugs(category: DocCategory): Promise<string[]> {
   try {
-    const files = await fs.readdir(DOCS_DIRECTORY);
+    const dir = getCategoryDirectory(category);
+    const files = await fs.readdir(dir);
     return files
       .filter((file) => file.endsWith('.md'))
       .map((file) => file.replace(/\.md$/, ''));
@@ -22,13 +32,13 @@ export async function getAllDocSlugs(): Promise<string[]> {
 }
 
 /**
- * すべての記事のメタデータ一覧を取得
+ * 指定カテゴリのすべての記事のメタデータ一覧を取得
  */
-export async function getAllDocsMeta(): Promise<DocMeta[]> {
-  const slugs = await getAllDocSlugs();
+export async function getAllDocsMeta(category: DocCategory): Promise<DocMeta[]> {
+  const slugs = await getAllDocSlugs(category);
   const docs = await Promise.all(
     slugs.map(async (slug) => {
-      const meta = await getDocMeta(slug);
+      const meta = await getDocMeta(category, slug);
       return meta;
     })
   );
@@ -36,11 +46,12 @@ export async function getAllDocsMeta(): Promise<DocMeta[]> {
 }
 
 /**
- * 指定slugの記事メタデータを取得
+ * 指定カテゴリ・slugの記事メタデータを取得
  */
-export async function getDocMeta(slug: string): Promise<DocMeta | null> {
+export async function getDocMeta(category: DocCategory, slug: string): Promise<DocMeta | null> {
   try {
-    const filePath = path.join(DOCS_DIRECTORY, `${slug}.md`);
+    const dir = getCategoryDirectory(category);
+    const filePath = path.join(dir, `${slug}.md`);
     const fileContent = await fs.readFile(filePath, 'utf-8');
     const { data } = matter(fileContent);
     const frontmatter = data as DocFrontmatter;
@@ -56,11 +67,12 @@ export async function getDocMeta(slug: string): Promise<DocMeta | null> {
 }
 
 /**
- * 指定slugの記事データ（本文HTML含む）を取得
+ * 指定カテゴリ・slugの記事データ（本文HTML含む）を取得
  */
-export async function getDocBySlug(slug: string): Promise<DocData | null> {
+export async function getDocBySlug(category: DocCategory, slug: string): Promise<DocData | null> {
   try {
-    const filePath = path.join(DOCS_DIRECTORY, `${slug}.md`);
+    const dir = getCategoryDirectory(category);
+    const filePath = path.join(dir, `${slug}.md`);
     const fileContent = await fs.readFile(filePath, 'utf-8');
     const { data, content } = matter(fileContent);
     const frontmatter = data as DocFrontmatter;
