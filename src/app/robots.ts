@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://tabikumi.com';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://tabikumi.vercel.app';
 
 /**
  * robots.txt を動的に生成
