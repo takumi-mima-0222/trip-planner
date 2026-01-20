@@ -26,6 +26,12 @@ export const usePlanFrom = () => {
             spots: savedCondition?.spots?.length 
                 ? savedCondition.spots.map((s) => ({ value: s }))
                 : [{ value: '' }],
+            // 終了条件（任意）
+            endLocation: savedCondition?.endLocation || '',
+            endTime: savedCondition?.endTime || '19:00',
+            // 交通手段・ペース
+            transportMode: savedCondition?.transportMode || 'transit',
+            pace: savedCondition?.pace || 'normal',
         },
     });
 

@@ -1,11 +1,26 @@
 'use client'
 
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, X, Home, BookOpen, Lightbulb, HelpCircle, Shield, Mail } from 'lucide-react'
+import { Menu, X, Home, BookOpen, Lightbulb, HelpCircle, Shield, Mail, MoreHorizontal } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 
+// メインナビ（PC表示で常に表示）
+const mainNavItems = [
+  { href: '/', label: 'ホーム', icon: Home },
+  { href: '/guide', label: 'ガイド', icon: BookOpen },
+  { href: '/tips', label: 'ノウハウ', icon: Lightbulb },
+  { href: '/faq', label: 'FAQ', icon: HelpCircle },
+]
+
+// その他メニュー（PC表示でドロップダウン）
+const moreNavItems = [
+  { href: '/privacy-policy', label: 'プライバシーポリシー', icon: Shield },
+  { href: 'https://docs.google.com/forms/d/e/1FAIpQLSfBa0yIsgUAhutsRyuKzVpH-ueacPJqbP9-1JrekJg5lcj3Ww/viewform?usp=publish-editor', label: 'お問い合わせ', icon: Mail, external: true },
+]
+
+// モバイル用（全て表示）
 const navItems = [
   { href: '/', label: 'ホーム', icon: Home },
   { href: '/guide', label: '使い方ガイド', icon: BookOpen },
@@ -17,6 +32,8 @@ const navItems = [
 
 const SiteHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isMoreOpen, setIsMoreOpen] = useState(false)
+  const moreMenuRef = useRef<HTMLDivElement>(null)
   const pathname = usePathname()
 
   const toggleMenu = useCallback(() => {
@@ -25,6 +42,14 @@ const SiteHeader = () => {
 
   const closeMenu = useCallback(() => {
     setIsMenuOpen(false)
+  }, [])
+
+  const toggleMoreMenu = useCallback(() => {
+    setIsMoreOpen((prev) => !prev)
+  }, [])
+
+  const closeMoreMenu = useCallback(() => {
+    setIsMoreOpen(false)
   }, [])
 
   // メニューが開いている時はスクロールを無効化
@@ -39,6 +64,21 @@ const SiteHeader = () => {
     }
   }, [isMenuOpen])
 
+  // 「その他」メニュー外クリックで閉じる
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (moreMenuRef.current && !moreMenuRef.current.contains(event.target as Node)) {
+        setIsMoreOpen(false)
+      }
+    }
+    if (isMoreOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isMoreOpen])
+
   return (
     <>
       <header className="sticky top-0 z-50 border-b border-sky-100 bg-white/80 backdrop-blur-md">
@@ -50,31 +90,15 @@ const SiteHeader = () => {
 
           {/* デスクトップナビゲーション */}
           <nav className="hidden md:flex items-center gap-1">
-            {navItems.map((item) => {
-              const isExternal = 'external' in item && item.external
-              const isActive = !isExternal && (pathname === item.href || 
-                (item.href !== '/' && pathname.startsWith(item.href)))
-              
-              if (isExternal) {
-                return (
-                  <a
-                    key={item.href}
-                    href={item.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors text-sky-700 hover:bg-sky-50 hover:text-sky-900"
-                  >
-                    <item.icon className="h-4 w-4" />
-                    {item.label}
-                  </a>
-                )
-              }
+            {mainNavItems.map((item) => {
+              const isActive = pathname === item.href || 
+                (item.href !== '/' && pathname.startsWith(item.href))
               
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                     isActive
                       ? 'bg-sky-100 text-sky-900'
                       : 'text-sky-700 hover:bg-sky-50 hover:text-sky-900'
@@ -85,6 +109,65 @@ const SiteHeader = () => {
                 </Link>
               )
             })}
+            
+            {/* その他メニュー（ドロップダウン） */}
+            <div className="relative" ref={moreMenuRef}>
+              <button
+                onClick={toggleMoreMenu}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  isMoreOpen
+                    ? 'bg-sky-100 text-sky-900'
+                    : 'text-sky-700 hover:bg-sky-50 hover:text-sky-900'
+                }`}
+                aria-expanded={isMoreOpen}
+                aria-haspopup="true"
+              >
+                <MoreHorizontal className="h-4 w-4" />
+                その他
+              </button>
+              
+              {isMoreOpen && (
+                <div className="absolute right-0 top-full mt-1 w-56 bg-white rounded-lg shadow-lg border border-sky-100 py-1 z-50">
+                  {moreNavItems.map((item) => {
+                    const isExternal = 'external' in item && item.external
+                    const isActive = !isExternal && (pathname === item.href || 
+                      (item.href !== '/' && pathname.startsWith(item.href)))
+                    
+                    if (isExternal) {
+                      return (
+                        <a
+                          key={item.href}
+                          href={item.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-3 px-4 py-2 text-sm font-medium transition-colors text-sky-700 hover:bg-sky-50 hover:text-sky-900"
+                          onClick={closeMoreMenu}
+                        >
+                          <item.icon className="h-4 w-4" />
+                          {item.label}
+                        </a>
+                      )
+                    }
+                    
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className={`flex items-center gap-3 px-4 py-2 text-sm font-medium transition-colors ${
+                          isActive
+                            ? 'bg-sky-50 text-sky-900'
+                            : 'text-sky-700 hover:bg-sky-50 hover:text-sky-900'
+                        }`}
+                        onClick={closeMoreMenu}
+                      >
+                        <item.icon className="h-4 w-4" />
+                        {item.label}
+                      </Link>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
           </nav>
 
           {/* モバイル用ハンバーガーメニューボタン */}

@@ -2,6 +2,9 @@ import { getOpenaiClient } from "@/shared/ai/openaiClient";
 import { tripPlanJsonSchema } from "./tripPlan.schema";
 import { TRIP_PLANNER_SYSTEM_PROMPT } from "./systemPrompt";
 
+export type TransportMode = "car" | "transit" | "walk";
+export type Pace = "relaxed" | "normal" | "packed";
+
 export type TripPlanRequest = {
   startDate: string; // "YYYY-MM-DD"
   endDate: string; // "YYYY-MM-DD"
@@ -9,6 +12,13 @@ export type TripPlanRequest = {
   startTime: string; // "HH:mm"
   baseStay: string;
   spots: string[];
+  // 終了条件（任意）
+  endLocation?: string;
+  endTime?: string; // "HH:mm"
+  // 交通手段
+  transportMode: TransportMode;
+  // 旅のペース
+  pace: Pace;
 };
 
 export type TripPlanItemType = "spot" | "meal" | "hotel" | "travel";
@@ -76,7 +86,12 @@ export async function createTripPlan(input: TripPlanRequest): Promise<TripPlanRe
           startLocation: input.startLocation,
           startTime: input.startTime,
           baseStay: input.baseStay,
-          spots: input.spots
+          spots: input.spots,
+          // 新しいフィールド
+          endLocation: input.endLocation || null,
+          endTime: input.endTime || null,
+          transportMode: input.transportMode,
+          pace: input.pace
         })
       }
     ],

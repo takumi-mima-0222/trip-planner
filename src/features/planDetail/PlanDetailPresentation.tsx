@@ -2,8 +2,8 @@
 
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { MapPin, Clock, Calendar, Home, AlertTriangle, Lightbulb, CheckCircle, XCircle, ArrowLeft, Plus, Utensils, Car, Building, Share2, Check } from 'lucide-react'
-import { PlanSummaryProps, TripPlanDay, TripPlanItem, TripPlanIssue, TripPlanAlternative } from './planDetail.type'
+import { MapPin, Clock, Calendar, Home, AlertTriangle, Lightbulb, CheckCircle, XCircle, ArrowLeft, Plus, Utensils, Car, Building, Share2, Check, Train, Footprints, Flag, Gauge } from 'lucide-react'
+import { PlanSummaryProps, TripPlanDay, TripPlanItem, TripPlanIssue, TripPlanAlternative, TransportMode, Pace } from './planDetail.type'
 
 export interface PlanDetailPresentationProps {
   summary: PlanSummaryProps | null;
@@ -15,6 +15,20 @@ export interface PlanDetailPresentationProps {
   onSharePlan: () => Promise<boolean>;
   isShareCopied: boolean;
 }
+
+// 交通手段の表示ラベル
+const transportModeLabels: Record<TransportMode, { label: string; icon: React.ReactNode }> = {
+  car: { label: '車', icon: <Car className="size-3.5" /> },
+  transit: { label: '公共交通', icon: <Train className="size-3.5" /> },
+  walk: { label: '徒歩', icon: <Footprints className="size-3.5" /> },
+};
+
+// ペースの表示ラベル
+const paceLabels: Record<Pace, string> = {
+  relaxed: 'ゆったり',
+  normal: 'ふつう',
+  packed: 'ぎゅっと',
+};
 
 const PlanDetailPresentation = ({
   summary,
@@ -84,6 +98,23 @@ const PlanDetailPresentation = ({
               <div className="flex items-center gap-2">
                 <Clock className="size-3.5 shrink-0 sm:size-4" />
                 <span>スポット数：{summary.spotCount}</span>
+              </div>
+              {/* 終了条件（指定されている場合のみ表示） */}
+              {(summary.endLocation || summary.endTime) && (
+                <div className="flex items-center gap-2">
+                  <Flag className="size-3.5 shrink-0 sm:size-4" />
+                  <span className="truncate">
+                    到着：{summary.endTime || '19:00'} / {summary.endLocation || summary.startLocation}
+                  </span>
+                </div>
+              )}
+              {/* 交通手段とペース */}
+              <div className="flex items-center gap-2">
+                {transportModeLabels[summary.transportMode].icon}
+                <span>{transportModeLabels[summary.transportMode].label}</span>
+                <span className="text-white/60">・</span>
+                <Gauge className="size-3.5 shrink-0 sm:size-4" />
+                <span>{paceLabels[summary.pace]}</span>
               </div>
             </div>
           </Card>
