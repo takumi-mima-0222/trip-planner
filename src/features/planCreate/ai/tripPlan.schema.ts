@@ -11,7 +11,7 @@ export const tripPlanJsonSchema = {
       request: {
         type: "object",
         additionalProperties: false,
-        required: ["startDate", "endDate", "startLocation", "startTime", "baseStay", "spots"],
+        required: ["startDate", "endDate", "startLocation", "startTime", "baseStay", "spots", "endLocation", "endTime", "transportMode", "pace"],
         properties: {
           startDate: { type: "string", pattern: "^\\d{4}-\\d{2}-\\d{2}$" },
           endDate: { type: "string", pattern: "^\\d{4}-\\d{2}-\\d{2}$" },
@@ -22,7 +22,13 @@ export const tripPlanJsonSchema = {
             type: "array",
             minItems: 1,
             items: { type: "string", minLength: 1 }
-          }
+          },
+          // 終了条件（任意 - nullを許容）
+          endLocation: { type: ["string", "null"] },
+          endTime: { type: ["string", "null"] },
+          // 交通手段・ペース
+          transportMode: { type: "string", enum: ["car", "transit", "walk"] },
+          pace: { type: "string", enum: ["relaxed", "normal", "packed"] }
         }
       },
 

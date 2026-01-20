@@ -62,6 +62,11 @@ export const usePlanDetail = () => {
     spotCount: plan.request.spots.length,
     isFeasible: plan.feasibility.isFeasible,
     feasibilitySummary: plan.feasibility.summary,
+    // 新しいフィールド（後方互換: undefinedの場合はデフォルト値を使用）
+    endLocation: plan.request.endLocation ?? null,
+    endTime: plan.request.endTime ?? null,
+    transportMode: plan.request.transportMode ?? 'transit',
+    pace: plan.request.pace ?? 'normal',
   } : null;
 
   // 実現可能性の値を安全に取得

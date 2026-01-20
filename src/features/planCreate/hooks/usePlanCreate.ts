@@ -23,6 +23,11 @@ export const usePlanCreate = () => {
 			departureTime: data.departureTime,
 			baseStay: data.baseStay,
 			spots: data.spots.map((s) => s.value),
+			// 新しいフィールド
+			endLocation: data.endLocation || undefined,
+			endTime: data.endTime || undefined,
+			transportMode: data.transportMode,
+			pace: data.pace,
 		});
 
 		try {
@@ -34,6 +39,11 @@ export const usePlanCreate = () => {
 				startTime: data.departureTime,
 				baseStay: data.baseStay,
 				spots: data.spots.map((s) => s.value),
+				// 新しいフィールド
+				endLocation: data.endLocation || undefined,
+				endTime: data.endTime || undefined,
+				transportMode: data.transportMode,
+				pace: data.pace,
 			});
 			console.log('AIが作成した旅行プラン:', result);
 

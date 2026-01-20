@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import type { TransportMode, Pace } from '@/features/planCreate/planCreate.type';
 
 /**
  * 検索条件（フォーム入力値）の型
@@ -10,6 +11,13 @@ export interface SearchCondition {
   departureTime: string;
   baseStay: string;
   spots: string[];
+  // 終了条件（任意）
+  endLocation?: string;
+  endTime?: string;
+  // 交通手段
+  transportMode: TransportMode;
+  // 旅のペース
+  pace: Pace;
 }
 
 interface SearchConditionState {
@@ -46,3 +54,7 @@ export const selectDeparture = (state: SearchConditionStore) => state.condition?
 export const selectDepartureTime = (state: SearchConditionStore) => state.condition?.departureTime ?? '';
 export const selectBaseStay = (state: SearchConditionStore) => state.condition?.baseStay ?? '';
 export const selectSpots = (state: SearchConditionStore) => state.condition?.spots ?? [];
+export const selectEndLocation = (state: SearchConditionStore) => state.condition?.endLocation;
+export const selectEndTime = (state: SearchConditionStore) => state.condition?.endTime;
+export const selectTransportMode = (state: SearchConditionStore) => state.condition?.transportMode ?? 'transit';
+export const selectPace = (state: SearchConditionStore) => state.condition?.pace ?? 'normal';

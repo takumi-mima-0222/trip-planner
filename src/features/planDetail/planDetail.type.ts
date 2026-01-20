@@ -1,7 +1,7 @@
-import { TripPlanResponse, TripPlanDay, TripPlanItem, TripPlanIssue, TripPlanAlternative } from '@/features/planCreate/ai/createTripPlan';
+import { TripPlanResponse, TripPlanDay, TripPlanItem, TripPlanIssue, TripPlanAlternative, TransportMode, Pace } from '@/features/planCreate/ai/createTripPlan';
 
 // Re-export types for convenience
-export type { TripPlanResponse, TripPlanDay, TripPlanItem, TripPlanIssue, TripPlanAlternative };
+export type { TripPlanResponse, TripPlanDay, TripPlanItem, TripPlanIssue, TripPlanAlternative, TransportMode, Pace };
 
 // Presentation用のProps型
 export interface PlanSummaryProps {
@@ -15,6 +15,11 @@ export interface PlanSummaryProps {
   spotCount: number;
   isFeasible: boolean;
   feasibilitySummary: string;
+  // 新しいフィールド
+  endLocation?: string | null;
+  endTime?: string | null;
+  transportMode: TransportMode;
+  pace: Pace;
 }
 
 export interface DayPlanProps {

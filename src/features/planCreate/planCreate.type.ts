@@ -9,6 +9,14 @@ export const spotSchema = z.object({
 	value: z.string().min(1, "スポット名を入力してください"),
 });
 
+// 交通手段
+export const transportModeSchema = z.enum(["car", "transit", "walk"]);
+export type TransportMode = z.infer<typeof transportModeSchema>;
+
+// 旅のペース
+export const paceSchema = z.enum(["relaxed", "normal", "packed"]);
+export type Pace = z.infer<typeof paceSchema>;
+
 export const planCreateSchema = z.object({
 	startDate: z
 		.string()
@@ -24,6 +32,17 @@ export const planCreateSchema = z.object({
 		.regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "時刻はHH:MM形式で入力してください"),
 	baseStay: z.string().min(1, "宿泊拠点を入力してください"),
 	spots: z.array(spotSchema).min(1, "1つ以上のスポットを入力してください"),
+	// 終了条件（任意）
+	endLocation: z.string().optional(),
+	endTime: z
+		.string()
+		.regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "時刻はHH:MM形式で入力してください")
+		.optional()
+		.or(z.literal("")),
+	// 交通手段（必須 - デフォルトはフォームのdefaultValuesで設定）
+	transportMode: transportModeSchema,
+	// 旅のペース（必須 - デフォルトはフォームのdefaultValuesで設定）
+	pace: paceSchema,
 }).refine(
 	(data) => new Date(data.startDate) <= new Date(data.endDate),
 	{
