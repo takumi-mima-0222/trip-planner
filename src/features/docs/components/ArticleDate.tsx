@@ -23,17 +23,18 @@ export function ArticleDate({ createdAt, updatedAt }: ArticleDateProps) {
   }
 
   return (
-    <div className="flex flex-wrap gap-4 text-sm text-slate-500 mb-6">
+    <div className="flex flex-wrap gap-3 text-sm mb-6">
       {createdAt && (
-        <div className="flex items-center gap-1.5">
-          <CalendarIcon className="w-4 h-4" />
-          <span>登録日: {formatDate(createdAt)}</span>
+        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-sky-50 text-sky-700 rounded-full">
+          <CalendarIcon className="w-3.5 h-3.5" />
+          <span className="font-medium">{formatDate(createdAt)}</span>
         </div>
       )}
-      {updatedAt && (
-        <div className="flex items-center gap-1.5">
-          <RefreshCwIcon className="w-4 h-4" />
-          <span>更新日: {formatDate(updatedAt)}</span>
+      {updatedAt && updatedAt !== createdAt && (
+        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 text-amber-700 rounded-full">
+          <RefreshCwIcon className="w-3.5 h-3.5" />
+          <span className="text-xs">更新</span>
+          <span className="font-medium">{formatDate(updatedAt)}</span>
         </div>
       )}
     </div>

@@ -6,6 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { HelpCircle, MessageCircle } from "lucide-react";
 
 const faqItems = [
   {
@@ -96,7 +97,7 @@ const faqItems = [
           <p>お問い合わせフォームをご利用いただけます。</p>
           <p className="mt-2">
             不具合やご意見、ご要望などがある場合は、
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfBa0yIsgUAhutsRyuKzVpH-ueacPJqbP9-1JrekJg5lcj3Ww/viewform?usp=publish-editor" className="text-sky-600 hover:underline">
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfBa0yIsgUAhutsRyuKzVpH-ueacPJqbP9-1JrekJg5lcj3Ww/viewform?usp=publish-editor" className="text-sky-600 hover:underline font-medium">
             お問い合わせフォーム
             </a>
             からご連絡ください。
@@ -108,27 +109,77 @@ const faqItems = [
 
 export const FaqPresentation = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-sky-50 to-amber-50/30">
-      <div className="container mx-auto max-w-3xl px-4 py-12">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-sky-900">よくある質問</h1>
-          <p className="mt-2 text-slate-600">
+    <div className="min-h-screen bg-gradient-to-b from-sky-50 to-amber-50/30 relative overflow-hidden">
+      {/* 背景装飾 */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-sky-200/20 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-amber-200/20 rounded-full blur-3xl" />
+      
+      <div className="container relative mx-auto max-w-3xl px-4 py-12 md:py-16">
+        {/* ヘッダーセクション */}
+        <div className="mb-10 text-center md:mb-12">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sky-100 text-sky-700 text-sm font-medium mb-4">
+            <HelpCircle className="size-4" />
+            <span>FAQ</span>
+          </div>
+          <h1 className="text-3xl font-bold tracking-tight text-sky-900 sm:text-4xl mb-3">
+            よくある質問
+          </h1>
+          <p className="text-slate-600 max-w-lg mx-auto">
             たびくみに関してよくいただく質問と、その回答をまとめています。
           </p>
         </div>
 
-      <Accordion type="single" collapsible className="w-full">
-        {faqItems.map((item) => (
-          <AccordionItem key={item.id} value={item.id}>
-            <AccordionTrigger className="text-left font-medium">
-              Q. {item.question}
-            </AccordionTrigger>
-            <AccordionContent className="text-slate-600">
-              {item.answer}
-            </AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
+        {/* FAQアコーディオン */}
+        <div className="relative">
+          <div className="absolute -inset-2 bg-gradient-to-r from-sky-100/50 to-amber-100/50 rounded-3xl blur-xl" />
+          
+          <div className="relative bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-sky-100/50 overflow-hidden">
+            <Accordion type="single" collapsible className="w-full">
+              {faqItems.map((item, index) => (
+                <AccordionItem 
+                  key={item.id} 
+                  value={item.id}
+                  className={`border-slate-100 ${index === 0 ? '' : 'border-t'}`}
+                >
+                  <AccordionTrigger className="text-left font-medium px-5 py-4 hover:bg-sky-50/50 transition-colors group sm:px-6">
+                    <span className="flex items-start gap-3">
+                      <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-sky-500 to-cyan-500 text-white text-xs font-bold mt-0.5">
+                        Q
+                      </span>
+                      <span className="text-slate-800 group-hover:text-sky-700 transition-colors pr-2">
+                        {item.question}
+                      </span>
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-5 pb-5 pt-0 sm:px-6">
+                    <div className="pl-9 text-slate-600 leading-relaxed">
+                      {item.answer}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        </div>
+        
+        {/* お問い合わせへの誘導 */}
+        <div className="mt-10 text-center md:mt-12">
+          <div className="inline-flex flex-col items-center gap-3 p-6 rounded-2xl bg-white/80 backdrop-blur-sm border border-sky-100/50 shadow-sm">
+            <div className="flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-sky-100 to-cyan-100">
+              <MessageCircle className="size-6 text-sky-600" />
+            </div>
+            <p className="text-slate-700 font-medium">お探しの回答が見つかりませんか？</p>
+            <a 
+              href="https://docs.google.com/forms/d/e/1FAIpQLSfBa0yIsgUAhutsRyuKzVpH-ueacPJqbP9-1JrekJg5lcj3Ww/viewform?usp=publish-editor"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-sky-600 text-white text-sm font-medium hover:bg-sky-700 transition-colors"
+            >
+              <MessageCircle className="size-4" />
+              お問い合わせはこちら
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   );
