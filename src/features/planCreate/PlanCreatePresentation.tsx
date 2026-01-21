@@ -92,8 +92,8 @@ const PlanCreatePresentation = ({
             {/* Section: 基本情報 */}
             <div className="space-y-4">
               {/* Travel Dates - 2 columns */}
-              <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                <div className="space-y-1.5">
+              <div className="grid grid-cols-2 gap-2 sm:gap-4">
+                <div className="space-y-1.5 min-w-0">
                   <label htmlFor="startDate" className="flex items-center gap-1.5 text-xs font-medium text-slate-700 sm:text-sm">
                     <Calendar className="size-3.5 text-sky-600 sm:size-4" />
                     開始日
@@ -101,13 +101,13 @@ const PlanCreatePresentation = ({
                   <Input
                     id="startDate"
                     type="date"
-                    className="h-10 w-full text-base sm:h-11"
+                    className="h-10 w-full min-w-0 text-base sm:h-11"
                     aria-invalid={!!errors.startDate}
                     {...register('startDate')}
                   />
                   {errors.startDate && <p className="text-xs text-red-600">{errors.startDate.message}</p>}
                 </div>
-                <div className="space-y-1.5">
+                <div className="space-y-1.5 min-w-0">
                   <label htmlFor="endDate" className="flex items-center gap-1.5 text-xs font-medium text-slate-700 sm:text-sm">
                     <Calendar className="size-3.5 text-sky-600 sm:size-4" />
                     終了日
@@ -115,7 +115,7 @@ const PlanCreatePresentation = ({
                   <Input
                     id="endDate"
                     type="date"
-                    className="h-10 w-full text-base sm:h-11"
+                    className="h-10 w-full min-w-0 text-base sm:h-11"
                     aria-invalid={!!errors.endDate}
                     {...register('endDate')}
                   />
