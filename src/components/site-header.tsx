@@ -3,8 +3,40 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, X, Home, BookOpen, Lightbulb, HelpCircle, Shield, Mail, MoreHorizontal } from 'lucide-react'
+import { Menu, X, Home, BookOpen, Lightbulb, HelpCircle, Shield, Mail, MoreHorizontal, ArrowRight, PlusCircle } from 'lucide-react'
 import { Button } from "@/components/ui/button"
+
+// たびくみロゴアイコン - 旅行プランを組み立てるイメージ
+const TabikumiIcon = ({ className }: { className?: string }) => (
+  <svg 
+    className={className} 
+    viewBox="0 0 32 32" 
+    fill="none" 
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    {/* 背景グラデーション円 */}
+    <defs>
+      <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#0ea5e9" />
+        <stop offset="100%" stopColor="#06b6d4" />
+      </linearGradient>
+      <linearGradient id="planeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#ffffff" />
+        <stop offset="100%" stopColor="#f0f9ff" />
+      </linearGradient>
+    </defs>
+    <circle cx="16" cy="16" r="15" fill="url(#iconGradient)" />
+    {/* 飛行機 */}
+    <path 
+      d="M22 12L14 16L10 14.5L9 15.5L12 18L11 22L12.5 22L15 19L18 20.5L19 19.5L17 16L22 13.5L22 12Z" 
+      fill="url(#planeGradient)"
+    />
+    {/* 経路ドット */}
+    <circle cx="8" cy="20" r="1.5" fill="white" opacity="0.8" />
+    <circle cx="11" cy="24" r="1" fill="white" opacity="0.6" />
+    <circle cx="24" cy="10" r="1" fill="white" opacity="0.6" />
+  </svg>
+);
 
 // メインナビ（PC表示で常に表示）
 const mainNavItems = [
@@ -81,11 +113,22 @@ const SiteHeader = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-sky-100 bg-white/80 backdrop-blur-md">
+      <header className="sticky top-0 z-50 border-b border-sky-100/80 bg-white/80 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
           {/* ロゴ - ホームへのリンク */}
-          <Link href="/" className="flex items-center gap-2 transition-opacity hover:opacity-80">
-            <h1 className="text-xl font-bold text-sky-900">たびくみ</h1>
+          <Link href="/" className="group flex items-center gap-2.5 transition-all hover:opacity-90">
+            <div className="relative">
+              <TabikumiIcon className="size-9 transition-transform group-hover:scale-105" />
+              <div className="absolute -inset-1 -z-10 rounded-full bg-sky-400/20 opacity-0 blur-md transition-opacity group-hover:opacity-100" />
+            </div>
+            <div className="flex flex-col">
+              <span className="bg-gradient-to-r from-sky-600 to-cyan-500 bg-clip-text text-lg font-bold tracking-tight text-transparent">
+                たびくみ
+              </span>
+              <span className="hidden text-[10px] font-medium text-slate-400 sm:block">
+                AI旅行プランナー
+              </span>
+            </div>
           </Link>
 
           {/* デスクトップナビゲーション */}
@@ -168,19 +211,40 @@ const SiteHeader = () => {
                 </div>
               )}
             </div>
+            
+            {/* 無料で始めるボタン（PC用） */}
+            <Link
+              href="/create"
+              className="ml-2 inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-sky-600 text-white hover:bg-sky-700 transition-colors"
+            >
+              <PlusCircle className="h-4 w-4" />
+              無料で始める
+            </Link>
           </nav>
 
-          {/* モバイル用ハンバーガーメニューボタン */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden text-sky-700 hover:text-sky-900 hover:bg-sky-50"
-            onClick={toggleMenu}
-            aria-label={isMenuOpen ? 'メニューを閉じる' : 'メニューを開く'}
-            aria-expanded={isMenuOpen}
-          >
-            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </Button>
+          {/* モバイル用ボタン群 */}
+          <div className="flex items-center gap-2 md:hidden">
+            {/* 無料で始めるボタン（モバイル用） */}
+            <Link
+              href="/create"
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium bg-sky-600 text-white hover:bg-sky-700 transition-colors"
+            >
+              <ArrowRight className="h-3.5 w-3.5" />
+              始める
+            </Link>
+            
+            {/* ハンバーガーメニューボタン */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-sky-700 hover:text-sky-900 hover:bg-sky-50"
+              onClick={toggleMenu}
+              aria-label={isMenuOpen ? 'メニューを閉じる' : 'メニューを開く'}
+              aria-expanded={isMenuOpen}
+            >
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </Button>
+          </div>
         </div>
       </header>
 
