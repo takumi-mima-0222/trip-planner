@@ -1,0 +1,1 @@
+export { TabikumiIcon } from './TabikumiIcon';

@@ -12,6 +12,7 @@ export const usePlanFrom = () => {
         register,
         handleSubmit,
         control,
+        watch,
         formState: { errors },
     } = useForm<PlanCreateInput>({
         resolver: zodResolver(planCreateSchema),
@@ -23,14 +24,15 @@ export const usePlanFrom = () => {
             departure: savedCondition?.departure || '',
             departureTime: savedCondition?.departureTime || '09:00',
             baseStay: savedCondition?.baseStay || '',
+            // v3: priority付きスポット配列
             spots: savedCondition?.spots?.length 
-                ? savedCondition.spots.map((s) => ({ value: s }))
-                : [{ value: '' }],
+                ? savedCondition.spots.map((s) => ({ value: s.name, priority: s.priority }))
+                : [{ value: '', priority: 'nice' as const }],
             // 終了条件（任意）
             endLocation: savedCondition?.endLocation || '',
             endTime: savedCondition?.endTime || '19:00',
             // 交通手段・ペース
-            transportMode: savedCondition?.transportMode || 'transit',
+            transportMode: savedCondition?.transportMode || 'car',
             pace: savedCondition?.pace || 'normal',
         },
     });
@@ -39,6 +41,7 @@ export const usePlanFrom = () => {
         register,
         handleSubmit,
         control,
+        watch,
         errors,
     };
 };

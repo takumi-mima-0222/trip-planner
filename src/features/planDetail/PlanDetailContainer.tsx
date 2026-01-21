@@ -8,7 +8,9 @@ export const PlanDetailContainer = () => {
     summary,
     days,
     issues,
-    alternatives,
+    planA,
+    planB,
+    hasPlanB,
     isShareCopied,
     handleBackToCreate,
     handleCreateNew,
@@ -20,7 +22,9 @@ export const PlanDetailContainer = () => {
       summary={summary}
       days={days}
       issues={issues}
-      alternatives={alternatives}
+      planA={planA}
+      planB={planB}
+      hasPlanB={hasPlanB}
       onBackToCreate={handleBackToCreate}
       onCreateNew={handleCreateNew}
       onSharePlan={handleSharePlan}

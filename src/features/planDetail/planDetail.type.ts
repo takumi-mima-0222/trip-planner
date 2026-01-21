@@ -1,7 +1,7 @@
-import { TripPlanResponse, TripPlanDay, TripPlanItem, TripPlanIssue, TripPlanAlternative, TransportMode, Pace } from '@/features/planCreate/ai/createTripPlan';
+import { TripPlanResponse, TripPlanDay, TripPlanItem, TripPlanIssue, TripPlanVariant, TripPlan, TransportMode, Pace, TripSpotInput } from '@/features/planCreate/ai/createTripPlan';
 
 // Re-export types for convenience
-export type { TripPlanResponse, TripPlanDay, TripPlanItem, TripPlanIssue, TripPlanAlternative, TransportMode, Pace };
+export type { TripPlanResponse, TripPlanDay, TripPlanItem, TripPlanIssue, TripPlanVariant, TripPlan, TransportMode, Pace, TripSpotInput };
 
 // Presentation用のProps型
 export interface PlanSummaryProps {
@@ -22,6 +22,12 @@ export interface PlanSummaryProps {
   pace: Pace;
 }
 
+// v3: プランバリエーションの表示用Props
+export interface PlanVariantDisplayProps {
+  variant: TripPlanVariant;
+  isRecommended: boolean;  // Plan Aの場合true
+}
+
 export interface DayPlanProps {
   day: TripPlanDay;
   isLastDay: boolean;
@@ -34,8 +40,4 @@ export interface TimelineItemProps {
 
 export interface IssueCardProps {
   issue: TripPlanIssue;
-}
-
-export interface AlternativeCardProps {
-  alternative: TripPlanAlternative;
 }

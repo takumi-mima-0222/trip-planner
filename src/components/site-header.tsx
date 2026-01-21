@@ -5,38 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, X, Home, BookOpen, Lightbulb, HelpCircle, Shield, Mail, MoreHorizontal, ArrowRight, PlusCircle } from 'lucide-react'
 import { Button } from "@/components/ui/button"
-
-// たびくみロゴアイコン - 旅行プランを組み立てるイメージ
-const TabikumiIcon = ({ className }: { className?: string }) => (
-  <svg 
-    className={className} 
-    viewBox="0 0 32 32" 
-    fill="none" 
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    {/* 背景グラデーション円 */}
-    <defs>
-      <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#0ea5e9" />
-        <stop offset="100%" stopColor="#06b6d4" />
-      </linearGradient>
-      <linearGradient id="planeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#ffffff" />
-        <stop offset="100%" stopColor="#f0f9ff" />
-      </linearGradient>
-    </defs>
-    <circle cx="16" cy="16" r="15" fill="url(#iconGradient)" />
-    {/* 飛行機 */}
-    <path 
-      d="M22 12L14 16L10 14.5L9 15.5L12 18L11 22L12.5 22L15 19L18 20.5L19 19.5L17 16L22 13.5L22 12Z" 
-      fill="url(#planeGradient)"
-    />
-    {/* 経路ドット */}
-    <circle cx="8" cy="20" r="1.5" fill="white" opacity="0.8" />
-    <circle cx="11" cy="24" r="1" fill="white" opacity="0.6" />
-    <circle cx="24" cy="10" r="1" fill="white" opacity="0.6" />
-  </svg>
-);
+import { TabikumiIcon } from "@/components/icons"
 
 // メインナビ（PC表示で常に表示）
 const mainNavItems = [

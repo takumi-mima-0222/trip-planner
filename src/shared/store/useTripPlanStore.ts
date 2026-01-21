@@ -1,10 +1,10 @@
 import { create } from 'zustand';
-import { TripPlanResponse } from '@/features/planCreate/ai/createTripPlan';
+import { TripPlanResponse, TripPlanVariant, TripPlanDay, TripPlanIssue } from '@/features/planCreate/ai/createTripPlan';
 
 type TripPlanStatus = 'idle' | 'loading' | 'success' | 'error';
 
 interface TripPlanState {
-  /** 現在のプラン結果 */
+  /** 現在のプラン結果（v3形式） */
   plan: TripPlanResponse | null;
   /** 処理状態 */
   status: TripPlanStatus;
@@ -61,6 +61,18 @@ export const selectTripPlan = (state: TripPlanStore) => state.plan;
 export const selectTripPlanStatus = (state: TripPlanStore) => state.status;
 export const selectTripPlanError = (state: TripPlanStore) => state.error;
 export const selectIsFeasible = (state: TripPlanStore) => state.plan?.feasibility.isFeasible ?? null;
-export const selectPlanDays = (state: TripPlanStore) => state.plan?.plan.days ?? [];
-export const selectIssues = (state: TripPlanStore) => state.plan?.issues ?? [];
-export const selectAlternatives = (state: TripPlanStore) => state.plan?.alternatives ?? [];
+
+// v3: plans配列のセレクター
+export const selectPlans = (state: TripPlanStore): TripPlanVariant[] => state.plan?.plans ?? [];
+export const selectPlanA = (state: TripPlanStore): TripPlanVariant | null => 
+  state.plan?.plans.find(p => p.id === 'A') ?? null;
+export const selectPlanB = (state: TripPlanStore): TripPlanVariant | null => 
+  state.plan?.plans.find(p => p.id === 'B') ?? null;
+export const selectHasPlanB = (state: TripPlanStore): boolean => 
+  state.plan?.plans.some(p => p.id === 'B') ?? false;
+
+// 既存互換: Plan Aのdaysを返す（後方互換用）
+export const selectPlanDays = (state: TripPlanStore): TripPlanDay[] => 
+  state.plan?.plans.find(p => p.id === 'A')?.plan.days ?? [];
+
+export const selectIssues = (state: TripPlanStore): TripPlanIssue[] => state.plan?.issues ?? [];

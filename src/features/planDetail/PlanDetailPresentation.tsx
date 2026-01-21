@@ -9,14 +9,17 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { MapPin, Clock, Calendar, Home, AlertTriangle, Lightbulb, CheckCircle, XCircle, ArrowLeft, Plus, Utensils, Car, Building, Share2, Check, Train, Footprints, Flag, Gauge, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react'
-import { PlanSummaryProps, TripPlanDay, TripPlanItem, TripPlanIssue, TripPlanAlternative, TransportMode, Pace } from './planDetail.type'
+import { MapPin, Clock, Calendar, Home, AlertTriangle, Lightbulb, CheckCircle, XCircle, ArrowLeft, Plus, Utensils, Car, Building, Share2, Check, Train, Footprints, Flag, Gauge, ChevronLeft, ChevronRight, Sparkles, Star, GitCompare, CircleCheck, CircleX } from 'lucide-react'
+import { PlanSummaryProps, TripPlanDay, TripPlanItem, TripPlanIssue, TripPlanVariant, TransportMode, Pace } from './planDetail.type'
 
 export interface PlanDetailPresentationProps {
   summary: PlanSummaryProps | null;
   days: TripPlanDay[];
   issues: TripPlanIssue[];
-  alternatives: TripPlanAlternative[];
+  // v3: 複数プラン対応
+  planA: TripPlanVariant | null;
+  planB: TripPlanVariant | null;
+  hasPlanB: boolean;
   onBackToCreate: () => void;
   onCreateNew: () => void;
   onSharePlan: () => Promise<boolean>;
@@ -41,13 +44,20 @@ const PlanDetailPresentation = ({
   summary,
   days,
   issues,
-  alternatives,
+  planA,
+  planB,
+  hasPlanB,
   onBackToCreate,
   onCreateNew,
   onSharePlan,
   isShareCopied,
 }: PlanDetailPresentationProps) => {
   const [activeDay, setActiveDay] = useState(0);
+  const [showPlanB, setShowPlanB] = useState(false);
+
+  // 現在表示中のプラン（Plan A or Plan B）
+  const currentVariant = showPlanB && planB ? planB : planA;
+  const currentDays = currentVariant?.plan.days ?? days;
 
   if (!summary) {
     return (
@@ -71,8 +81,8 @@ const PlanDetailPresentation = ({
     );
   }
 
-  const currentDay = days[activeDay];
-  const hasMultipleDays = days.length > 1;
+  const currentDay = currentDays[activeDay];
+  const hasMultipleDays = currentDays.length > 1;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-sky-50 via-white to-amber-50/30">
@@ -160,54 +170,126 @@ const PlanDetailPresentation = ({
           </Card>
 
           {/* Issues & Alternatives (Collapsible) */}
-          {(issues.length > 0 || alternatives.length > 0) && (
+          {issues.length > 0 && (
             <Accordion type="single" collapsible className="space-y-3">
-              {issues.length > 0 && (
-                <AccordionItem value="issues" className="overflow-hidden rounded-2xl border-0 bg-gradient-to-br from-amber-50 to-orange-50 shadow-lg">
-                  <AccordionTrigger className="px-4 py-4 hover:no-underline sm:px-6">
-                    <div className="flex items-center gap-3">
-                      <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400 to-orange-400 text-white shadow-lg shadow-amber-400/30">
-                        <AlertTriangle className="size-5" />
-                      </div>
-                      <div className="text-left">
-                        <h3 className="font-bold text-amber-800">注意点・問題点</h3>
-                        <p className="text-xs text-amber-600">{issues.length}件の注意事項があります</p>
-                      </div>
+              <AccordionItem value="issues" className="overflow-hidden rounded-2xl border-0 bg-gradient-to-br from-amber-50 to-orange-50 shadow-lg">
+                <AccordionTrigger className="px-4 py-4 hover:no-underline sm:px-6">
+                  <div className="flex items-center gap-3">
+                    <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400 to-orange-400 text-white shadow-lg shadow-amber-400/30">
+                      <AlertTriangle className="size-5" />
                     </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="px-4 pb-4 sm:px-6 sm:pb-6">
-                    <div className="space-y-3">
-                      {issues.map((issue, index) => (
-                        <IssueCard key={index} issue={issue} />
-                      ))}
+                    <div className="text-left">
+                      <h3 className="font-bold text-amber-800">注意点・問題点</h3>
+                      <p className="text-xs text-amber-600">{issues.length}件の注意事項があります</p>
                     </div>
-                  </AccordionContent>
-                </AccordionItem>
-              )}
-
-              {alternatives.length > 0 && (
-                <AccordionItem value="alternatives" className="overflow-hidden rounded-2xl border-0 bg-gradient-to-br from-sky-50 to-cyan-50 shadow-lg">
-                  <AccordionTrigger className="px-4 py-4 hover:no-underline sm:px-6">
-                    <div className="flex items-center gap-3">
-                      <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-sky-400 to-cyan-400 text-white shadow-lg shadow-sky-400/30">
-                        <Lightbulb className="size-5" />
-                      </div>
-                      <div className="text-left">
-                        <h3 className="font-bold text-sky-800">代替案・提案</h3>
-                        <p className="text-xs text-sky-600">{alternatives.length}件の提案があります</p>
-                      </div>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="px-4 pb-4 sm:px-6 sm:pb-6">
-                    <div className="space-y-3">
-                      {alternatives.map((alt) => (
-                        <AlternativeCard key={alt.id} alternative={alt} />
-                      ))}
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              )}
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="px-4 pb-4 sm:px-6 sm:pb-6">
+                  <div className="space-y-3">
+                    {issues.map((issue, index) => (
+                      <IssueCard key={index} issue={issue} />
+                    ))}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
             </Accordion>
+          )}
+
+          {/* Plan Variant Toggle & Info (v3) */}
+          {planA && (
+            <Card className="overflow-hidden border-0 bg-white/80 shadow-lg backdrop-blur-sm">
+              <div className="border-b border-slate-100 bg-gradient-to-r from-sky-50 to-cyan-50 p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className={`flex size-10 items-center justify-center rounded-xl text-white shadow-lg ${
+                      showPlanB && planB 
+                        ? 'bg-gradient-to-br from-purple-400 to-pink-400 shadow-purple-400/30'
+                        : 'bg-gradient-to-br from-sky-400 to-cyan-400 shadow-sky-400/30'
+                    }`}>
+                      <Star className="size-5" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-bold text-slate-900">
+                          {showPlanB && planB ? planB.title : planA.title}
+                        </h3>
+                        {!showPlanB && (
+                          <span className="rounded-full bg-sky-100 px-2 py-0.5 text-xs font-medium text-sky-700">
+                            おすすめ
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-slate-600">
+                        {showPlanB && planB ? planB.rationale : planA.rationale}
+                      </p>
+                    </div>
+                  </div>
+                  {hasPlanB && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setShowPlanB(!showPlanB);
+                        setActiveDay(0);
+                      }}
+                      className={`text-xs transition-all ${
+                        showPlanB 
+                          ? 'border-purple-300 bg-purple-50 text-purple-700 hover:bg-purple-100'
+                          : 'border-sky-300 bg-sky-50 text-sky-700 hover:bg-sky-100'
+                      }`}
+                    >
+                      <GitCompare className="mr-1.5 size-3.5" />
+                      {showPlanB ? 'Plan A を見る' : 'Plan B を見る'}
+                    </Button>
+                  )}
+                </div>
+              </div>
+
+              {/* 採用/除外スポット表示 */}
+              <div className="p-4">
+                <div className="space-y-3">
+                  {/* 採用スポット */}
+                  {currentVariant && currentVariant.includedSpots.length > 0 && (
+                    <div>
+                      <div className="mb-2 flex items-center gap-1.5 text-xs font-medium text-emerald-700">
+                        <CircleCheck className="size-3.5" />
+                        採用スポット
+                      </div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {currentVariant.includedSpots.map((spot, index) => (
+                          <span
+                            key={index}
+                            className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700 ring-1 ring-emerald-200"
+                          >
+                            {spot}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 除外スポット */}
+                  {currentVariant && currentVariant.excludedSpots.length > 0 && (
+                    <div>
+                      <div className="mb-2 flex items-center gap-1.5 text-xs font-medium text-slate-500">
+                        <CircleX className="size-3.5" />
+                        このプランに含まれないスポット
+                      </div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {currentVariant.excludedSpots.map((spot, index) => (
+                          <span
+                            key={index}
+                            className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-500 ring-1 ring-slate-200"
+                          >
+                            {spot}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </Card>
           )}
 
           {/* Day Tabs (for multiple days) */}
@@ -224,7 +306,7 @@ const PlanDetailPresentation = ({
               </Button>
               
               <div className="flex flex-1 justify-center gap-1 overflow-x-auto sm:gap-2">
-                {days.map((day, index) => (
+                {currentDays.map((day, index) => (
                   <button
                     key={day.dayNumber}
                     onClick={() => setActiveDay(index)}
@@ -245,8 +327,8 @@ const PlanDetailPresentation = ({
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setActiveDay(prev => Math.min(days.length - 1, prev + 1))}
-                disabled={activeDay === days.length - 1}
+                onClick={() => setActiveDay(prev => Math.min(currentDays.length - 1, prev + 1))}
+                disabled={activeDay === currentDays.length - 1}
                 className="shrink-0 disabled:opacity-30"
               >
                 <ChevronRight className="size-5" />
@@ -259,7 +341,7 @@ const PlanDetailPresentation = ({
             <DayPlan 
               key={currentDay.dayNumber} 
               day={currentDay} 
-              isLastDay={activeDay === days.length - 1}
+              isLastDay={activeDay === currentDays.length - 1}
               showHeader={!hasMultipleDays}
             />
           )}
@@ -573,33 +655,6 @@ function IssueCard({ issue }: { issue: TripPlanIssue }) {
           ))}
         </div>
       )}
-    </div>
-  )
-}
-
-// Alternative Card Component
-function AlternativeCard({ alternative }: { alternative: TripPlanAlternative }) {
-  return (
-    <div className="overflow-hidden rounded-xl border border-sky-200 bg-white shadow-sm transition-all hover:shadow-md">
-      <div className="border-b border-sky-100 bg-gradient-to-r from-sky-50 to-cyan-50 p-3">
-        <h4 className="flex items-center gap-2 font-bold text-sky-800">
-          <Sparkles className="size-4" />
-          {alternative.title}
-        </h4>
-      </div>
-      <div className="p-4">
-        <p className="mb-3 text-sm leading-relaxed text-slate-600">{alternative.description}</p>
-        {alternative.changes.length > 0 && (
-          <ul className="space-y-2">
-            {alternative.changes.map((change, index) => (
-              <li key={index} className="flex items-start gap-2 text-sm text-slate-600">
-                <CheckCircle className="mt-0.5 size-4 shrink-0 text-emerald-500" />
-                <span>{change}</span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
     </div>
   )
 }

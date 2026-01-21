@@ -4,8 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Check, MapPin, Utensils, Car, Building, ArrowRight, Play, ChevronLeft, ChevronRight, Sparkles, Route, Clock, Plane, Heart } from "lucide-react";
-import { HERO_CONTENT, SAMPLE_PLAN_DAYS, SAMPLE_PLAN_SUMMARY } from "./constants";
+import { Check, MapPin, Utensils, Car, Building, ArrowRight, Play, ChevronLeft, ChevronRight, Sparkles, Route, Clock, Plane, Heart, Eye } from "lucide-react";
+import { HERO_CONTENT, SAMPLE_PLAN_DAYS } from "./constants";
 
 // ターゲットユーザーデータ（アイコン付き）
 const TARGET_AUDIENCE_WITH_ICONS = [
@@ -63,8 +63,8 @@ export function Hero() {
                   </span>
                 </span>
               ))}
-            </h1>
-            <p className="text-slate-600 text-sm sm:text-base mb-6">
+              </h1>
+              <p className="text-slate-600 text-sm sm:text-base mb-6">
               {HERO_CONTENT.subText.split('。').filter(Boolean).map((sentence, index, arr) => (
                 <span key={index} className="block">
                   {sentence}{index < arr.length - 1 ? '。' : ''}
@@ -73,7 +73,7 @@ export function Hero() {
             </p>
 
             {/* こんな人向けチェックリスト */}
-            <div className="mb-8 rounded-2xl border border-sky-100/80 bg-gradient-to-br from-white/80 to-sky-50/50 p-5 shadow-sm backdrop-blur-sm">
+            <div className="mb-8 rounded-2xl border border-sky-100/80 bg-gradient-to-br from-white/80 to-sky-50/50 p-5 shadow-sm backdrop-blur-sm text-left">
               <div className="inline-flex items-center gap-2 mb-4">
                 <div className="flex size-6 items-center justify-center rounded-full bg-gradient-to-br from-sky-500 to-cyan-500 shadow-sm shadow-sky-500/30">
                   <Check className="size-3.5 text-white" />
@@ -98,7 +98,7 @@ export function Hero() {
             </div>
 
             {/* CTA */}
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
               <Button asChild size="lg" className="text-base h-12 px-8 bg-sky-600 hover:bg-sky-700">
                 <Link href="/create">
                   無料で始める
@@ -134,7 +134,7 @@ export function Hero() {
                       <Sparkles className="size-4 text-amber-300" />
                       <span className="text-white text-sm font-medium">あなたの旅がこうなります</span>
                     </div>
-                    <span className="text-sky-100 text-xs">{SAMPLE_PLAN_SUMMARY.title}</span>
+                    <span className="px-2 py-0.5 rounded-full bg-white/20 text-sky-100 text-xs font-medium">簡易版</span>
                   </div>
                 </div>
 
@@ -230,13 +230,23 @@ export function Hero() {
                   </div>
                 </div>
 
-                {/* フッター */}
-                <div className="px-4 py-2.5 bg-gradient-to-r from-amber-50 to-sky-50 border-t border-slate-100">
-                  <p className="text-xs text-slate-600 text-center">
-                    <span className="font-medium text-sky-700">30秒</span>で、あなただけの旅程が完成します
-                  </p>
+                {/* フッター - 本格サンプルへのリンク */}
+                <div className="px-4 py-3 bg-gradient-to-r from-amber-50 to-sky-50 border-t border-slate-100">
+                  <Link 
+                    href="#sample" 
+                    className="group flex items-center justify-center gap-2 text-sm text-slate-600 hover:text-sky-700 transition-colors"
+                  >
+                    <Eye className="size-4" />
+                    <span>詳細なサンプルを見る</span>
+                    <ArrowRight className="size-3.5 group-hover:translate-x-0.5 transition-transform" />
+                  </Link>
                 </div>
               </Card>
+              
+              {/* 補足テキスト */}
+              <p className="text-center text-xs text-slate-500 mt-3">
+                ※ これは簡易プレビューです。実際はより詳細な旅程が生成されます
+              </p>
             </div>
           </div>
         </div>

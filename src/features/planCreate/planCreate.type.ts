@@ -1,5 +1,9 @@
 import { z } from "zod";
 
+// スポットの優先度
+export const spotPrioritySchema = z.enum(["must", "nice"]);
+export type SpotPriority = z.infer<typeof spotPrioritySchema>;
+
 // 出発地点: 文字列
 // 出発時刻: 例）09:00
 // 旅行開始日・終了日: YYYY-MM-DD形式
@@ -7,6 +11,7 @@ import { z } from "zod";
 // 行きたいスポット: オブジェクト配列（useFieldArray対応）
 export const spotSchema = z.object({
 	value: z.string().min(1, "スポット名を入力してください"),
+	priority: spotPrioritySchema,
 });
 
 // 交通手段

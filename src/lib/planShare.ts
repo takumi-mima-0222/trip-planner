@@ -1,4 +1,38 @@
-import { TripPlanResponse } from '@/features/planCreate/ai/createTripPlan';
+import { TripPlanResponse, TripPlanResponseV2 } from '@/features/planCreate/ai/createTripPlan';
+
+/**
+ * v2のプランデータをv3形式に変換する
+ */
+function convertV2ToV3(v2Plan: TripPlanResponseV2): TripPlanResponse {
+  return {
+    version: "trip-plan.v3",
+    timezone: "Asia/Tokyo",
+    request: {
+      startDate: v2Plan.request.startDate,
+      endDate: v2Plan.request.endDate,
+      startLocation: v2Plan.request.startLocation,
+      startTime: v2Plan.request.startTime,
+      baseStay: v2Plan.request.baseStay,
+      // v2のstring[]をv3のTripSpotInput[]に変換（全て"nice"として扱う）
+      spots: v2Plan.request.spots.map(name => ({ name, priority: "nice" as const })),
+      endLocation: v2Plan.request.endLocation ?? undefined,
+      endTime: v2Plan.request.endTime ?? undefined,
+      transportMode: v2Plan.request.transportMode,
+      pace: v2Plan.request.pace,
+    },
+    feasibility: v2Plan.feasibility,
+    // v2のplanをPlan Aとして変換
+    plans: [{
+      id: "A",
+      title: v2Plan.plan.title,
+      rationale: "既存のプランから変換されました",
+      includedSpots: v2Plan.request.spots,
+      excludedSpots: [],
+      plan: v2Plan.plan,
+    }],
+    issues: v2Plan.issues,
+  };
+}
 
 /**
  * プランデータをURLセーフな文字列にエンコードする
@@ -18,21 +52,27 @@ export function encodePlanToUrl(plan: TripPlanResponse): string {
 
 /**
  * URLパラメータからプランデータをデコードする
+ * v2/v3両対応
  */
 export function decodePlanFromUrl(encoded: string): TripPlanResponse | null {
   try {
     const jsonString = decompressFromBase64(encoded);
     if (!jsonString) return null;
     
-    const plan = JSON.parse(jsonString) as TripPlanResponse;
+    const plan = JSON.parse(jsonString) as TripPlanResponse | TripPlanResponseV2;
     
-    // 基本的なバリデーション
+    // v2形式の場合はv3に変換
+    if (plan.version === 'trip-plan.v2') {
+      return convertV2ToV3(plan as TripPlanResponseV2);
+    }
+    
+    // v3形式のバリデーション
     if (!validatePlanStructure(plan)) {
       console.error('Invalid plan structure');
       return null;
     }
     
-    return plan;
+    return plan as TripPlanResponse;
   } catch (error) {
     console.error('Failed to decode plan:', error);
     return null;
@@ -40,18 +80,18 @@ export function decodePlanFromUrl(encoded: string): TripPlanResponse | null {
 }
 
 /**
- * プランデータの構造をバリデーション
+ * プランデータの構造をバリデーション（v3形式）
  */
 function validatePlanStructure(plan: unknown): plan is TripPlanResponse {
   if (typeof plan !== 'object' || plan === null) return false;
   
   const p = plan as Record<string, unknown>;
   
-  // 必須フィールドの存在チェック
-  if (p.version !== 'trip-plan.v2') return false;
+  // v3の必須フィールドの存在チェック
+  if (p.version !== 'trip-plan.v3') return false;
   if (!p.request || typeof p.request !== 'object') return false;
   if (!p.feasibility || typeof p.feasibility !== 'object') return false;
-  if (!p.plan || typeof p.plan !== 'object') return false;
+  if (!p.plans || !Array.isArray(p.plans) || p.plans.length === 0) return false;
   
   return true;
 }

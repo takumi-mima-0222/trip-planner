@@ -1,11 +1,91 @@
+// TripPlanの日程アイテムスキーマ（共通）
+const tripPlanItemSchema = {
+  type: "object",
+  additionalProperties: false,
+  required: ["spotId", "type", "startTime", "endTime", "name", "stayMinutes", "detail"],
+  properties: {
+    spotId: { type: "string", minLength: 1 },
+    type: { type: "string", enum: ["spot", "meal", "hotel", "travel"] },
+    startTime: { type: "string", pattern: "^([01]\\d|2[0-3]):[0-5]\\d$" },
+    endTime: { type: "string", pattern: "^([01]\\d|2[0-3]):[0-5]\\d$" },
+    name: { type: "string", minLength: 1 },
+    stayMinutes: { type: "integer", minimum: 0 },
+    detail: { type: "string" }
+  }
+} as const;
+
+// TripPlanの日程スキーマ（共通）
+const tripPlanDaySchema = {
+  type: "object",
+  additionalProperties: false,
+  required: ["dayNumber", "date", "theme", "items"],
+  properties: {
+    dayNumber: { type: "integer", minimum: 1 },
+    date: { type: "string", pattern: "^\\d{4}-\\d{2}-\\d{2}$" },
+    theme: { type: "string", minLength: 1 },
+    items: {
+      type: "array",
+      items: tripPlanItemSchema
+    }
+  }
+} as const;
+
+// TripPlan本体のスキーマ（共通）
+const tripPlanSchema = {
+  type: "object",
+  additionalProperties: false,
+  required: ["title", "totalDays", "days"],
+  properties: {
+    title: { type: "string", minLength: 1 },
+    totalDays: { type: "integer", minimum: 1 },
+    days: {
+      type: "array",
+      minItems: 1,
+      items: tripPlanDaySchema
+    }
+  }
+} as const;
+
+// スポット入力スキーマ（v3: priority付き）
+const tripSpotInputSchema = {
+  type: "object",
+  additionalProperties: false,
+  required: ["name", "priority"],
+  properties: {
+    name: { type: "string", minLength: 1 },
+    priority: { type: "string", enum: ["must", "nice"] }
+  }
+} as const;
+
+// TripPlanVariantスキーマ（v3の複数プラン）
+const tripPlanVariantSchema = {
+  type: "object",
+  additionalProperties: false,
+  required: ["id", "title", "rationale", "includedSpots", "excludedSpots", "plan"],
+  properties: {
+    id: { type: "string", enum: ["A", "B"] },
+    title: { type: "string", minLength: 1 },
+    rationale: { type: "string", minLength: 1 },
+    includedSpots: {
+      type: "array",
+      items: { type: "string", minLength: 1 }
+    },
+    excludedSpots: {
+      type: "array",
+      items: { type: "string" }
+    },
+    plan: tripPlanSchema
+  }
+} as const;
+
 export const tripPlanJsonSchema = {
-  name: "tripPlanV2",
+  name: "tripPlanV3",
   schema: {
     type: "object",
     additionalProperties: false,
-    required: ["version", "timezone", "request", "feasibility", "plan", "issues", "alternatives"],
+    required: ["version", "timezone", "request", "feasibility", "plans", "issues"],
     properties: {
-      version: { type: "string", enum: ["trip-plan.v2"] },
+      version: { type: "string", enum: ["trip-plan.v3"] },
       timezone: { type: "string", enum: ["Asia/Tokyo"] },
 
       request: {
@@ -21,7 +101,7 @@ export const tripPlanJsonSchema = {
           spots: {
             type: "array",
             minItems: 1,
-            items: { type: "string", minLength: 1 }
+            items: tripSpotInputSchema
           },
           // 終了条件（任意 - nullを許容）
           endLocation: { type: ["string", "null"] },
@@ -43,46 +123,12 @@ export const tripPlanJsonSchema = {
         }
       },
 
-      // 日別のプラン
-      plan: {
-        type: "object",
-        additionalProperties: false,
-        required: ["title", "totalDays", "days"],
-        properties: {
-          title: { type: "string", minLength: 1 },
-          totalDays: { type: "integer", minimum: 1 },
-          days: {
-            type: "array",
-            minItems: 1,
-            items: {
-              type: "object",
-              additionalProperties: false,
-              required: ["dayNumber", "date", "theme", "items"],
-              properties: {
-                dayNumber: { type: "integer", minimum: 1 },
-                date: { type: "string", pattern: "^\\d{4}-\\d{2}-\\d{2}$" },
-                theme: { type: "string", minLength: 1 },
-                items: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    additionalProperties: false,
-                    required: ["spotId", "type", "startTime", "endTime", "name", "stayMinutes", "detail"],
-                    properties: {
-                      spotId: { type: "string", minLength: 1 },
-                      type: { type: "string", enum: ["spot", "meal", "hotel", "travel"] },
-                      startTime: { type: "string", pattern: "^([01]\\d|2[0-3]):[0-5]\\d$" },
-                      endTime: { type: "string", pattern: "^([01]\\d|2[0-3]):[0-5]\\d$" },
-                      name: { type: "string", minLength: 1 },
-                      stayMinutes: { type: "integer", minimum: 0 },
-                      detail: { type: "string" }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
+      // 複数プラン（1〜2件）
+      plans: {
+        type: "array",
+        minItems: 1,
+        maxItems: 2,
+        items: tripPlanVariantSchema
       },
 
       // 破綻している場合の問題点
@@ -99,25 +145,6 @@ export const tripPlanJsonSchema = {
             affectedSpots: {
               type: "array",
               items: { type: "string" }
-            }
-          }
-        }
-      },
-
-      // 代替案（破綻時や最適化提案）
-      alternatives: {
-        type: "array",
-        items: {
-          type: "object",
-          additionalProperties: false,
-          required: ["id", "title", "description", "changes"],
-          properties: {
-            id: { type: "string", minLength: 1 },
-            title: { type: "string", minLength: 1 },
-            description: { type: "string", minLength: 1 },
-            changes: {
-              type: "array",
-              items: { type: "string", minLength: 1 }
             }
           }
         }

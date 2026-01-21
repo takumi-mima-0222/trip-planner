@@ -1,6 +1,6 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, useCallback, useMemo } from 'react';
-import { useTripPlanStore, selectTripPlan, selectTripPlanStatus, selectPlanDays, selectIssues, selectAlternatives } from '@/shared/store/useTripPlanStore';
+import { useTripPlanStore, selectTripPlan, selectTripPlanStatus, selectPlanDays, selectIssues, selectPlanA, selectPlanB, selectHasPlanB } from '@/shared/store/useTripPlanStore';
 import { useSearchConditionStore, selectSearchCondition } from '@/shared/store/useSearchConditionStore';
 import { PlanSummaryProps } from '../planDetail.type';
 import { decodePlanFromUrl, copyShareUrlToClipboard } from '@/lib/planShare';
@@ -9,6 +9,7 @@ import { decodePlanFromUrl, copyShareUrlToClipboard } from '@/lib/planShare';
  * プラン詳細画面用のカスタムフック
  * ストアからプランデータを取得し、表示用に整形する
  * URLパラメータからの共有プラン読み込みにも対応
+ * v3: 複数プラン（Plan A/B）に対応
  */
 export const usePlanDetail = () => {
   const router = useRouter();
@@ -17,7 +18,9 @@ export const usePlanDetail = () => {
   const status = useTripPlanStore(selectTripPlanStatus);
   const days = useTripPlanStore(selectPlanDays);
   const issues = useTripPlanStore(selectIssues);
-  const alternatives = useTripPlanStore(selectAlternatives);
+  const planA = useTripPlanStore(selectPlanA);
+  const planB = useTripPlanStore(selectPlanB);
+  const hasPlanB = useTripPlanStore(selectHasPlanB);
   const searchCondition = useSearchConditionStore(selectSearchCondition);
   const setPlan = useTripPlanStore((state) => state.setPlan);
   
@@ -50,16 +53,22 @@ export const usePlanDetail = () => {
   // URLから読み込まれたかどうか
   const isLoadedFromUrl = hasDataParam && !!decodedPlan;
 
-  // サマリー情報を整形
-  const summary: PlanSummaryProps | null = plan ? {
-    title: plan.plan.title,
+  // スポット数の計算（v3対応: TripSpotInput[]）
+  const spotCount = useMemo(() => {
+    if (!plan?.request.spots) return 0;
+    return plan.request.spots.length;
+  }, [plan?.request.spots]);
+
+  // サマリー情報を整形（Plan Aをベースに）
+  const summary: PlanSummaryProps | null = plan && planA ? {
+    title: planA.plan.title,
     startDate: plan.request.startDate,
     endDate: plan.request.endDate,
-    totalDays: plan.plan.totalDays,
+    totalDays: planA.plan.totalDays,
     startLocation: plan.request.startLocation,
     startTime: plan.request.startTime,
     baseStay: plan.request.baseStay,
-    spotCount: plan.request.spots.length,
+    spotCount,
     isFeasible: plan.feasibility.isFeasible,
     feasibilitySummary: plan.feasibility.summary,
     // 新しいフィールド（後方互換: undefinedの場合はデフォルト値を使用）
@@ -74,7 +83,7 @@ export const usePlanDetail = () => {
 
   // 新規プラン作成へ戻る（検索条件は保持）
   const handleBackToCreate = () => {
-    router.push('/');
+    router.push('/create');
   };
 
   // ストアをリセットして新規作成
@@ -104,7 +113,10 @@ export const usePlanDetail = () => {
     isFeasible,
     days,
     issues,
-    alternatives,
+    // v3: 複数プラン対応
+    planA,
+    planB,
+    hasPlanB,
     searchCondition,
     isLoading,
     shouldRedirect,

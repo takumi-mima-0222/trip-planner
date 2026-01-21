@@ -1,5 +1,13 @@
 import { create } from 'zustand';
-import type { TransportMode, Pace } from '@/features/planCreate/planCreate.type';
+import type { TransportMode, Pace, SpotPriority } from '@/features/planCreate/planCreate.type';
+
+/**
+ * スポット入力型（v3: priority付き）
+ */
+export interface SpotInput {
+  name: string;
+  priority: SpotPriority;
+}
 
 /**
  * 検索条件（フォーム入力値）の型
@@ -10,7 +18,7 @@ export interface SearchCondition {
   departure: string;
   departureTime: string;
   baseStay: string;
-  spots: string[];
+  spots: SpotInput[];  // v3: priority付きスポット配列
   // 終了条件（任意）
   endLocation?: string;
   endTime?: string;

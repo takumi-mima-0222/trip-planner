@@ -4,25 +4,17 @@ import './globals.css'
 import SiteHeader from '@/components/site-header'
 
 export const metadata: Metadata = {
-  title: 'AI旅行プランナー - 1日の旅行プランを自動作成',
+  title: 'たびくみ - 旅行プランをAIが自動作成',
   description: '行きたい場所を入れるだけで、AIが効率の良い順番とスケジュールを提案します。',
   generator: 'v0.app',
   icons: {
     icon: [
       {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
         url: '/icon.svg',
         type: 'image/svg+xml',
       },
     ],
-    apple: '/apple-icon.png',
+    apple: '/apple-icon.svg',
   },
 }
 
